@@ -45,3 +45,4 @@ build*/
 bin/
 perf.data
 perf.data.old
+fuzz-artifacts/
