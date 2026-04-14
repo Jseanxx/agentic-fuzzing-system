@@ -148,12 +148,30 @@ def run_quiet(cmd: list[str], cwd: Path) -> tuple[int, str]:
 
 
 def send_discord(message: str) -> None:
+    message = message[:1900]
     webhook = os.environ.get("DISCORD_WEBHOOK_URL")
-    if not webhook:
-        print("[notify] DISCORD_WEBHOOK_URL not set; skipping Discord notification.")
+    if webhook:
+        payload = json.dumps({"content": message}).encode()
+        req = urllib.request.Request(webhook, data=payload, headers={"Content-Type": "application/json"})
+        with urllib.request.urlopen(req, timeout=15) as response:
+            response.read()
         return
+
+    channel_id = os.environ.get("DISCORD_PROGRESS_CHANNEL_ID") or os.environ.get("DISCORD_CHANNEL_ID")
+    bot_token = os.environ.get("DISCORD_BOT_TOKEN") or os.environ.get("DISCORD_TOKEN")
+    if not channel_id or not bot_token:
+        print(
+            "[notify] Set DISCORD_WEBHOOK_URL, or set both "
+            "DISCORD_BOT_TOKEN and DISCORD_PROGRESS_CHANNEL_ID to enable Discord notifications."
+        )
+        return
+
     payload = json.dumps({"content": message}).encode()
-    req = urllib.request.Request(webhook, data=payload, headers={"Content-Type": "application/json"})
+    req = urllib.request.Request(
+        f"https://discord.com/api/v10/channels/{channel_id}/messages",
+        data=payload,
+        headers={"Content-Type": "application/json", "Authorization": f"Bot {bot_token}"},
+    )
     with urllib.request.urlopen(req, timeout=15) as response:
         response.read()
 
