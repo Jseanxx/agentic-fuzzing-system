@@ -86,6 +86,62 @@ class Metrics:
                 self.top_crash_lines.append(line.rstrip())
 
 
+def format_duration(seconds: float) -> str:
+    seconds = max(0, int(seconds))
+    hours, remainder = divmod(seconds, 3600)
+    minutes, seconds = divmod(remainder, 60)
+    return f"{hours:02d}:{minutes:02d}:{seconds:02d}"
+
+
+def metrics_snapshot(
+    *,
+    outcome: str,
+    metrics: Metrics,
+    run_dir: Path,
+    report_path: Path,
+    start: float,
+) -> dict[str, object]:
+    now = time.monotonic()
+    return {
+        "outcome": outcome,
+        "duration_seconds": round(now - start, 1),
+        "duration": format_duration(now - start),
+        "seconds_since_progress": round(now - metrics.last_progress_at, 1),
+        "since_progress": format_duration(now - metrics.last_progress_at),
+        "cov": metrics.cov,
+        "ft": metrics.ft,
+        "corpus_units": metrics.corp_units,
+        "corpus_size": metrics.corp_size,
+        "exec_per_second": metrics.execs,
+        "rss": metrics.rss,
+        "crash_detected": metrics.crash,
+        "timeout_detected": metrics.timeout,
+        "run_dir": str(run_dir),
+        "report": str(report_path),
+        "updated_at": dt.datetime.now().isoformat(timespec="seconds"),
+    }
+
+
+def write_status(status_path: Path, snapshot: dict[str, object]) -> None:
+    tmp_path = status_path.with_suffix(".tmp")
+    tmp_path.write_text(json.dumps(snapshot, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    tmp_path.replace(status_path)
+
+
+def format_progress_message(snapshot: dict[str, object]) -> str:
+    return "\n".join(
+        [
+            "[OpenHTJ2K fuzz] PROGRESS",
+            f"duration: {snapshot['duration']}",
+            f"last progress: {snapshot['since_progress']} ago",
+            f"cov: {snapshot['cov']} ft: {snapshot['ft']} corp: {snapshot['corpus_units']}",
+            f"exec/s: {snapshot['exec_per_second']} rss: {snapshot['rss']}",
+            f"status: {snapshot['outcome']}",
+            f"run: {snapshot['run_dir']}",
+        ]
+    )
+
+
 def run_quiet(cmd: list[str], cwd: Path) -> tuple[int, str]:
     proc = subprocess.run(cmd, cwd=cwd, text=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     return proc.returncode, proc.stdout
@@ -198,6 +254,12 @@ def main() -> int:
     parser.add_argument("--repo", default=Path(__file__).resolve().parents[1], type=Path)
     parser.add_argument("--max-total-time", default=int(os.environ.get("MAX_TOTAL_TIME", "3600")), type=int)
     parser.add_argument("--no-progress-seconds", default=int(os.environ.get("NO_PROGRESS_SECONDS", "1800")), type=int)
+    parser.add_argument(
+        "--progress-interval-seconds",
+        default=int(os.environ.get("PROGRESS_INTERVAL_SECONDS", "600")),
+        type=int,
+        help="Send/write progress snapshots at this interval; use 0 to disable interval notifications.",
+    )
     parser.add_argument("--skip-build", action="store_true")
     parser.add_argument("--skip-smoke", action="store_true")
     args = parser.parse_args()
@@ -211,6 +273,8 @@ def main() -> int:
     smoke_log = run_dir / "smoke.log"
     fuzz_log = run_dir / "fuzz.log"
     report_path = run_dir / "FUZZING_REPORT.md"
+    status_path = run_dir / "status.json"
+    current_status_path = repo_root / "fuzz-artifacts" / "current_status.json"
 
     if not args.skip_build:
         build_code, build_output = run_quiet(["bash", "scripts/build-libfuzzer.sh"], repo_root)
@@ -260,6 +324,7 @@ def main() -> int:
     start = time.monotonic()
     metrics = Metrics()
     outcome = "ok"
+    last_progress_notify_at = start
 
     with fuzz_log.open("w", encoding="utf-8", errors="replace") as log:
         proc = subprocess.Popen(
@@ -278,6 +343,22 @@ def main() -> int:
             log.write(line)
             log.flush()
             metrics.update_from_line(line)
+            snapshot = metrics_snapshot(
+                outcome=outcome,
+                metrics=metrics,
+                run_dir=run_dir,
+                report_path=report_path,
+                start=start,
+            )
+            write_status(status_path, snapshot)
+            write_status(current_status_path, snapshot)
+            if args.progress_interval_seconds > 0 and (
+                time.monotonic() - last_progress_notify_at >= args.progress_interval_seconds
+            ):
+                message = format_progress_message(snapshot)
+                print(f"[progress] {message.replace(chr(10), ' | ')}")
+                send_discord(message)
+                last_progress_notify_at = time.monotonic()
             if time.monotonic() - metrics.last_progress_at > args.no_progress_seconds:
                 outcome = "no-progress"
                 try:
@@ -294,6 +375,15 @@ def main() -> int:
         outcome = "timeout"
     elif exit_code != 0 and outcome == "ok":
         outcome = "fuzzer-exit-nonzero"
+    final_snapshot = metrics_snapshot(
+        outcome=outcome,
+        metrics=metrics,
+        run_dir=run_dir,
+        report_path=report_path,
+        start=start,
+    )
+    write_status(status_path, final_snapshot)
+    write_status(current_status_path, final_snapshot)
 
     write_report(
         report_path,
