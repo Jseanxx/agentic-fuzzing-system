@@ -12,10 +12,10 @@
 - [x] Replace the root README with umbrella-project framing
 - [x] Add target-level README describing the JPEG2000 testbed role
 - [x] Update ignore rules for generated caches/build artifacts
-- [ ] Double-check git status for accidental junk
-- [ ] Commit cleanly
-- [ ] Push to GitHub
-- [ ] Rename remote repository to match the broader project scope
+- [x] Double-check git status for accidental junk
+- [x] Commit cleanly
+- [x] Push to GitHub
+- [x] Rename remote repository to match the broader project scope
 
 ## Double-checks
 - [x] Root README no longer claims the whole repo is only OpenHTJ2K
