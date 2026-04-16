@@ -1,0 +1,491 @@
+{
+  "apply_candidate": {},
+  "apply_candidate_manifest_path": null,
+  "apply_result": {},
+  "apply_result_manifest_path": null,
+  "current_status": {
+    "artifact_category": "crash",
+    "artifact_reason": "sanitizer-crash",
+    "corpus_size": "1593b",
+    "corpus_units": 7,
+    "cov": 53,
+    "crash_artifact": "/home/hermes/work/fuzzing-jpeg2000/fuzz-artifacts/modes/coverage/20260416_221832_coverage/crashes/crash-07e93f6953e036f83b1649bc50857d0d0562a2ab",
+    "crash_artifact_sha1": "07e93f6953e036f83b1649bc50857d0d0562a2ab",
+    "crash_detected": true,
+    "crash_fingerprint": "asan|j2kmarkers.cpp:52|heap-buffer-overflow /home/hermes/work/fuzzing-jpeg2000/source/core/codestream/j2kmarkers.cpp:52:17 in j2k_marker_io_base::get_byte()",
+    "crash_first_seen_run": "/home/hermes/work/fuzzing-jpeg2000/fuzz-artifacts/runs/20260416_200858_1d5b676",
+    "crash_is_duplicate": true,
+    "crash_kind": "asan",
+    "crash_location": "j2kmarkers.cpp:52",
+    "crash_occurrence_count": 6,
+    "crash_stage": "ht-block-decode",
+    "crash_stage_class": "deep",
+    "crash_stage_confidence": "medium",
+    "crash_stage_depth_rank": 4,
+    "crash_stage_match_source": "signal",
+    "crash_stage_reason": "expected signal match: htj2k_decode",
+    "crash_summary": "heap-buffer-overflow /home/hermes/work/fuzzing-jpeg2000/source/core/codestream/j2kmarkers.cpp:52:17 in j2k_marker_io_base::get_byte()",
+    "duration": "00:00:01",
+    "duration_seconds": 1.0,
+    "exec_per_second": 0,
+    "ft": 153,
+    "history_appended": 1,
+    "notification_context": "final-summary",
+    "notification_error": null,
+    "notification_error_type": null,
+    "notification_reason": "missing-config",
+    "notification_status": "skipped",
+    "notification_transport": "disabled",
+    "outcome": "crash",
+    "policy_action_code": "review_duplicate_crash_replay",
+    "policy_bucket": "triage",
+    "policy_execution_updated": [
+      "policy_log",
+      "known_bad",
+      "duplicate_crash_reviews",
+      "regression"
+    ],
+    "policy_matched_triggers": [],
+    "policy_next_mode": "triage",
+    "policy_priority": "high",
+    "policy_profile_labels": [
+      "heap-buffer-overflow",
+      "ht-block-decode-overflow"
+    ],
+    "policy_profile_severity": "critical",
+    "policy_recommended_action": "Preserve duplicate family evidence, compare first and latest repros, and prepare replay/minimization triage instead of only filing this as known-bad.",
+    "regression_trigger": null,
+    "report": "/home/hermes/work/fuzzing-jpeg2000/fuzz-artifacts/modes/coverage/20260416_221832_coverage/FUZZING_REPORT.md",
+    "rss": "37Mb",
+    "run_dir": "/home/hermes/work/fuzzing-jpeg2000/fuzz-artifacts/modes/coverage/20260416_221832_coverage",
+    "seconds_since_progress": 0.8,
+    "since_progress": "00:00:00",
+    "target_profile_load_error": null,
+    "target_profile_load_error_detail": null,
+    "target_profile_load_status": "loaded",
+    "target_profile_name": "openhtj2k-target-profile-v1",
+    "target_profile_path": "/home/hermes/work/fuzzing-jpeg2000/fuzz-records/profiles/openhtj2k-target-profile-v1.yaml",
+    "target_profile_primary_binary": "open_htj2k_deep_decode_focus_v3_harness",
+    "target_profile_primary_mode": "deep-decode-v3",
+    "target_profile_project": "openhtj2k",
+    "target_profile_stage_count": 6,
+    "target_profile_validation_codes": [],
+    "target_profile_validation_severity": null,
+    "target_profile_validation_status": "valid",
+    "timeout_detected": false,
+    "updated_at": "2026-04-16T22:18:33"
+  },
+  "current_status_path": "/home/hermes/work/fuzzing-jpeg2000/fuzz-artifacts/current_status.json",
+  "duplicate_crash_review": {
+    "action_code": "review_duplicate_crash_replay",
+    "artifact_category": "crash",
+    "artifact_paths": [
+      "/home/hermes/work/fuzzing-jpeg2000/fuzz-artifacts/runs/20260416_200858_1d5b676/crashes/crash-964206b1bbf197c651b1198941e6e35a8830b2bf",
+      "/home/hermes/work/fuzzing-jpeg2000/fuzz-artifacts/runs/20260416_201732_1d5b676/crashes/crash-b3c5e4eb4b2827051ee3179055e7151026e05c37",
+      "/home/hermes/work/fuzzing-jpeg2000/fuzz-artifacts/runs/20260416_202702_1d5b676/crashes/crash-5e1dbfc1e1257014678913af52217fa8eb380818",
+      "/home/hermes/work/fuzzing-jpeg2000/fuzz-artifacts/runs/20260416_205116_1d5b676/crashes/crash-33785f9915a4429ab43505601b52818c3ad1ebd4",
+      "/home/hermes/work/fuzzing-jpeg2000/fuzz-artifacts/modes/coverage/20260416_221705_coverage/crashes/crash-0e00eab812ff07a48a1cbc1915b02d07ad402eb1",
+      "/home/hermes/work/fuzzing-jpeg2000/fuzz-artifacts/modes/coverage/20260416_221832_coverage/crashes/crash-07e93f6953e036f83b1649bc50857d0d0562a2ab"
+    ],
+    "completed_at": "2026-04-16T20:27:21",
+    "crash_fingerprint": "asan|j2kmarkers.cpp:52|heap-buffer-overflow /home/hermes/work/fuzzing-jpeg2000/source/core/codestream/j2kmarkers.cpp:52:17 in j2k_marker_io_base::get_byte()",
+    "crash_location": "j2kmarkers.cpp:52",
+    "crash_summary": "heap-buffer-overflow /home/hermes/work/fuzzing-jpeg2000/source/core/codestream/j2kmarkers.cpp:52:17 in j2k_marker_io_base::get_byte()",
+    "executor_plan_path": "/home/hermes/work/fuzzing-jpeg2000/fuzz-records/refiner-plans/review_duplicate_crash_replay-home-hermes-work-fuzzing-jpeg2000-fuzz-artifacts-runs-20260416_202702_1d5b676.md",
+    "first_artifact_path": "/home/hermes/work/fuzzing-jpeg2000/fuzz-artifacts/runs/20260416_200858_1d5b676/crashes/crash-964206b1bbf197c651b1198941e6e35a8830b2bf",
+    "first_artifact_sha1": "964206b1bbf197c651b1198941e6e35a8830b2bf",
+    "first_replay_command": [
+      "/home/hermes/work/fuzzing-jpeg2000/build-fuzz-libfuzzer/bin/open_htj2k_deep_decode_focus_v3_harness",
+      "/home/hermes/work/fuzzing-jpeg2000/fuzz-artifacts/runs/20260416_200858_1d5b676/crashes/crash-964206b1bbf197c651b1198941e6e35a8830b2bf"
+    ],
+    "first_replay_exit_code": -6,
+    "first_replay_log_path": "/home/hermes/work/fuzzing-jpeg2000/fuzz-records/duplicate-crash-replays/home-hermes-work-fuzzing-jpeg2000-fuzz-artifacts-runs-20260416_202702_1d5b676-first.log",
+    "first_replay_signal_lines": [
+      "==553387==ERROR: AddressSanitizer: heap-buffer-overflow on address 0x511000000108 at pc 0x5b7c13d94eaf bp 0x7ffefd3b7800 sp 0x7ffefd3b77f8",
+      "SUMMARY: AddressSanitizer: heap-buffer-overflow /home/hermes/work/fuzzing-jpeg2000/source/core/codestream/j2kmarkers.cpp:52:17 in j2k_marker_io_base::get_byte()"
+    ],
+    "first_replay_signature": {
+      "artifact_path": null,
+      "artifact_sha1": null,
+      "fingerprint": "asan|j2kmarkers.cpp:52|heap-buffer-overflow /home/hermes/work/fuzzing-jpeg2000/source/core/codestream/j2kmarkers.cpp:52:17 in j2k_marker_io_base::get_byte()",
+      "kind": "asan",
+      "location": "j2kmarkers.cpp:52",
+      "summary": "heap-buffer-overflow /home/hermes/work/fuzzing-jpeg2000/source/core/codestream/j2kmarkers.cpp:52:17 in j2k_marker_io_base::get_byte()"
+    },
+    "first_seen_report_path": "/home/hermes/work/fuzzing-jpeg2000/fuzz-artifacts/runs/20260416_200858_1d5b676/FUZZING_REPORT.md",
+    "first_seen_run": "/home/hermes/work/fuzzing-jpeg2000/fuzz-artifacts/runs/20260416_200858_1d5b676",
+    "key": "review_duplicate_crash_replay:asan|j2kmarkers.cpp:52|heap-buffer-overflow /home/hermes/work/fuzzing-jpeg2000/source/core/codestream/j2kmarkers.cpp:52:17 in j2k_marker_io_base::get_byte()",
+    "last_seen_run": "/home/hermes/work/fuzzing-jpeg2000/fuzz-artifacts/modes/coverage/20260416_221832_coverage",
+    "latest_artifact_path": "/home/hermes/work/fuzzing-jpeg2000/fuzz-artifacts/modes/coverage/20260416_221832_coverage/crashes/crash-07e93f6953e036f83b1649bc50857d0d0562a2ab",
+    "latest_artifact_sha1": "5e1dbfc1e1257014678913af52217fa8eb380818",
+    "latest_replay_command": [
+      "/home/hermes/work/fuzzing-jpeg2000/build-fuzz-libfuzzer/bin/open_htj2k_deep_decode_focus_v3_harness",
+      "/home/hermes/work/fuzzing-jpeg2000/fuzz-artifacts/runs/20260416_202702_1d5b676/crashes/crash-5e1dbfc1e1257014678913af52217fa8eb380818"
+    ],
+    "latest_replay_exit_code": -6,
+    "latest_replay_log_path": "/home/hermes/work/fuzzing-jpeg2000/fuzz-records/duplicate-crash-replays/home-hermes-work-fuzzing-jpeg2000-fuzz-artifacts-runs-20260416_202702_1d5b676-latest.log",
+    "latest_replay_signal_lines": [
+      "==553391==ERROR: AddressSanitizer: heap-buffer-overflow on address 0x5110000000f1 at pc 0x5ae7a01e9e7b bp 0x7ffdcf9a0be0 sp 0x7ffdcf9a0bd8",
+      "SUMMARY: AddressSanitizer: heap-buffer-overflow /home/hermes/work/fuzzing-jpeg2000/source/core/codestream/j2kmarkers.cpp:52:17 in j2k_marker_io_base::get_byte()"
+    ],
+    "latest_replay_signature": {
+      "artifact_path": null,
+      "artifact_sha1": null,
+      "fingerprint": "asan|j2kmarkers.cpp:52|heap-buffer-overflow /home/hermes/work/fuzzing-jpeg2000/source/core/codestream/j2kmarkers.cpp:52:17 in j2k_marker_io_base::get_byte()",
+      "kind": "asan",
+      "location": "j2kmarkers.cpp:52",
+      "summary": "heap-buffer-overflow /home/hermes/work/fuzzing-jpeg2000/source/core/codestream/j2kmarkers.cpp:52:17 in j2k_marker_io_base::get_byte()"
+    },
+    "lifecycle": "planned",
+    "occurrence_count": 6,
+    "outcome": "crash",
+    "queue_rank": 1,
+    "queue_reasons": [
+      "base:10",
+      "candidate-effective:0"
+    ],
+    "queue_weight": 10,
+    "recommended_action": "Preserve duplicate family evidence, compare first and latest repros, and prepare replay/minimization triage instead of only filing this as known-bad.",
+    "replay_artifact_bytes_equal": false,
+    "replay_execution_checked_at": "2026-04-16T21:12:33",
+    "replay_execution_json_path": "/home/hermes/work/fuzzing-jpeg2000/fuzz-records/duplicate-crash-replays/home-hermes-work-fuzzing-jpeg2000-fuzz-artifacts-runs-20260416_202702_1d5b676.json",
+    "replay_execution_markdown_path": "/home/hermes/work/fuzzing-jpeg2000/fuzz-records/duplicate-crash-replays/home-hermes-work-fuzzing-jpeg2000-fuzz-artifacts-runs-20260416_202702_1d5b676.md",
+    "replay_execution_status": "completed",
+    "replay_harness_path": "/home/hermes/work/fuzzing-jpeg2000/build-fuzz-libfuzzer/bin/open_htj2k_deep_decode_focus_v3_harness",
+    "report_path": "/home/hermes/work/fuzzing-jpeg2000/fuzz-artifacts/modes/coverage/20260416_221832_coverage/FUZZING_REPORT.md",
+    "run_dir": "/home/hermes/work/fuzzing-jpeg2000/fuzz-artifacts/modes/coverage/20260416_221832_coverage",
+    "selected_effective_score": 0,
+    "status": "completed"
+  },
+  "failure_reason_codes": [
+    "fuzz-log-memory-safety-signal",
+    "repeated-crash-family"
+  ],
+  "failure_reasons": [
+    {
+      "causal_chain": "fuzz_log => fuzz_log_signal_summary=AddressSanitizer => fuzz-log-memory-safety-signal",
+      "code": "fuzz-log-memory-safety-signal",
+      "evidence": {
+        "fuzz_log_path": "/home/hermes/work/fuzzing-jpeg2000/fuzz-artifacts/modes/coverage/20260416_221832_coverage/fuzz.log",
+        "fuzz_log_signals": [
+          "==560602==ERROR: AddressSanitizer: heap-buffer-overflow on address 0x511000008970 at pc 0x62c2c9cbc22b bp 0x7ffe4f1b89a0 sp 0x7ffe4f1b8998"
+        ]
+      },
+      "explanation": "The latest fuzz log already contains sanitizer-style memory-safety signals; use that body-level clue to guide the next corrective step. Evidence focus: fuzz_log_signal_summary=AddressSanitizer from fuzz_log.",
+      "source": "fuzz_log",
+      "summary": "The latest fuzz log already contains sanitizer-style memory-safety signals; use that body-level clue to guide the next corrective step."
+    },
+    {
+      "causal_chain": "current_status => repeated-crash-family",
+      "code": "repeated-crash-family",
+      "evidence": {
+        "crash_fingerprint": "asan|j2kmarkers.cpp:52|heap-buffer-overflow /home/hermes/work/fuzzing-jpeg2000/source/core/codestream/j2kmarkers.cpp:52:17 in j2k_marker_io_base::get_byte()",
+        "crash_occurrence_count": 6
+      },
+      "explanation": "The latest crash family is repeating; reduce shallow rediscovery and push toward distinct/deeper signal.",
+      "source": "current_status",
+      "summary": "The latest crash family is repeating; reduce shallow rediscovery and push toward distinct/deeper signal."
+    }
+  ],
+  "finding_efficiency_recommendation": "bias-llm-toward-novelty-and-stage-reach",
+  "finding_efficiency_summary": {
+    "corpus_growth": -1,
+    "coverage_delta": 8.0,
+    "recent_window_size": 4,
+    "recommendation": "bias-llm-toward-novelty-and-stage-reach",
+    "status": "weak",
+    "summary": "repeated crash family with low novelty",
+    "unique_crash_fingerprints": 2,
+    "weak_signals": [
+      "repeated crash family with low novelty"
+    ]
+  },
+  "generated_at": "2026-04-16T22:18:33",
+  "generated_from_project": "openhtj2k",
+  "llm_evidence_json_path": "/home/hermes/work/fuzzing-jpeg2000/fuzz-records/llm-evidence/openhtj2k-llm-evidence.json",
+  "llm_evidence_markdown_path": "/home/hermes/work/fuzzing-jpeg2000/fuzz-records/llm-evidence/openhtj2k-llm-evidence.md",
+  "llm_objective": "deeper-stage-reach",
+  "objective_routing_linkage_summary": "stable duplicate replay across distinct artifacts confirms the same crash family; prefer bounded minimization and reseed planning before another blind rerun",
+  "probe_feedback": {},
+  "probe_feedback_manifest_path": null,
+  "probe_manifest": {},
+  "probe_manifest_path": null,
+  "raw_signal_summary": {
+    "apply_signal_count": 0,
+    "apply_signal_summary": null,
+    "apply_signals": [],
+    "body_signal_priority": [
+      "fuzz_log"
+    ],
+    "build_log_path": "/home/hermes/work/fuzzing-jpeg2000/fuzz-artifacts/modes/coverage/20260416_221832_coverage/build.log",
+    "build_log_signal_count": 0,
+    "build_log_signal_summary": null,
+    "build_log_signals": [],
+    "fuzz_log_path": "/home/hermes/work/fuzzing-jpeg2000/fuzz-artifacts/modes/coverage/20260416_221832_coverage/fuzz.log",
+    "fuzz_log_signal_count": 1,
+    "fuzz_log_signal_summary": "AddressSanitizer",
+    "fuzz_log_signals": [
+      "==560602==ERROR: AddressSanitizer: heap-buffer-overflow on address 0x511000008970 at pc 0x62c2c9cbc22b bp 0x7ffe4f1b89a0 sp 0x7ffe4f1b8998"
+    ],
+    "probe_signal_count": 0,
+    "probe_signal_summary": null,
+    "probe_signals": [],
+    "smoke_log_path": null,
+    "smoke_log_signal_count": 0,
+    "smoke_log_signal_summary": null,
+    "smoke_log_signals": []
+  },
+  "run_history": [
+    {
+      "corpus_size": null,
+      "corpus_units": null,
+      "cov": null,
+      "crash_fingerprint": null,
+      "crash_stage": null,
+      "exec_per_second": null,
+      "ft": null,
+      "outcome": "smoke-failed",
+      "policy_action_code": "promote-seed-to-regression-and-triage",
+      "policy_matched_triggers": [],
+      "policy_profile_severity": null,
+      "report": "/home/hermes/work/fuzzing-jpeg2000/fuzz-artifacts/modes/regression/20260416_180801_regression/FUZZING_REPORT.md",
+      "run_dir": "/home/hermes/work/fuzzing-jpeg2000/fuzz-artifacts/modes/regression/20260416_180801_regression",
+      "seconds_since_progress": 0.0,
+      "timeout_detected": false,
+      "updated_at": "2026-04-16T18:08:02"
+    },
+    {
+      "corpus_size": null,
+      "corpus_units": null,
+      "cov": null,
+      "crash_fingerprint": null,
+      "crash_stage": null,
+      "exec_per_second": null,
+      "ft": null,
+      "outcome": "smoke-failed",
+      "policy_action_code": "promote-seed-to-regression-and-triage",
+      "policy_matched_triggers": [],
+      "policy_profile_severity": null,
+      "report": "/home/hermes/work/fuzzing-jpeg2000/fuzz-artifacts/runs/20260416_180800_1d5b676/FUZZING_REPORT.md",
+      "run_dir": "/home/hermes/work/fuzzing-jpeg2000/fuzz-artifacts/runs/20260416_180800_1d5b676",
+      "seconds_since_progress": 1.2,
+      "timeout_detected": false,
+      "updated_at": "2026-04-16T18:08:02"
+    },
+    {
+      "corpus_size": null,
+      "corpus_units": null,
+      "cov": null,
+      "crash_fingerprint": "asan|coding_units.cpp:3076|SEGV /home/hermes/work/fuzzing-jpeg2000/source/core/coding/coding_units.cpp:3076:16 in j2k_tile::add_tile_part(SOT_marker&, j2c_src_memory&, j2k_main_header&)",
+      "crash_stage": "tile-part-load",
+      "exec_per_second": null,
+      "ft": null,
+      "outcome": "crash",
+      "policy_action_code": "triage-new-crash",
+      "policy_matched_triggers": [],
+      "policy_profile_severity": "high",
+      "report": "/home/hermes/work/fuzzing-jpeg2000/fuzz-artifacts/runs/20260416_182632_1d5b676/FUZZING_REPORT.md",
+      "run_dir": "/home/hermes/work/fuzzing-jpeg2000/fuzz-artifacts/runs/20260416_182632_1d5b676",
+      "seconds_since_progress": 1.6,
+      "timeout_detected": false,
+      "updated_at": "2026-04-16T18:26:34"
+    },
+    {
+      "corpus_size": "672b",
+      "corpus_units": 3,
+      "cov": 42,
+      "crash_fingerprint": "leak|coding_units.cpp:3927|12312 byte(s) leaked in 1 allocation(s).",
+      "crash_stage": "tile-part-load",
+      "exec_per_second": 0,
+      "ft": 121,
+      "outcome": "crash",
+      "policy_action_code": "triage-leak-and-consider-coverage-policy",
+      "policy_matched_triggers": [],
+      "policy_profile_severity": null,
+      "report": "/home/hermes/work/fuzzing-jpeg2000/fuzz-artifacts/runs/20260416_183444_1d5b676/FUZZING_REPORT.md",
+      "run_dir": "/home/hermes/work/fuzzing-jpeg2000/fuzz-artifacts/runs/20260416_183444_1d5b676",
+      "seconds_since_progress": 0.2,
+      "timeout_detected": false,
+      "updated_at": "2026-04-16T18:34:44"
+    },
+    {
+      "corpus_size": "1066b",
+      "corpus_units": 5,
+      "cov": 45,
+      "crash_fingerprint": "asan|j2kmarkers.cpp:52|heap-buffer-overflow /home/hermes/work/fuzzing-jpeg2000/source/core/codestream/j2kmarkers.cpp:52:17 in j2k_marker_io_base::get_byte()",
+      "crash_stage": "ht-block-decode",
+      "exec_per_second": 0,
+      "ft": 137,
+      "outcome": "crash",
+      "policy_action_code": "continue_and_prioritize_triage",
+      "policy_matched_triggers": [
+        "deep_signal_emergence"
+      ],
+      "policy_profile_severity": "critical",
+      "report": "/home/hermes/work/fuzzing-jpeg2000/fuzz-artifacts/runs/20260416_200858_1d5b676/FUZZING_REPORT.md",
+      "run_dir": "/home/hermes/work/fuzzing-jpeg2000/fuzz-artifacts/runs/20260416_200858_1d5b676",
+      "seconds_since_progress": 1.0,
+      "timeout_detected": false,
+      "updated_at": "2026-04-16T20:08:59"
+    },
+    {
+      "corpus_size": "1066b",
+      "corpus_units": 5,
+      "cov": 45,
+      "crash_fingerprint": "asan|j2kmarkers.cpp:52|heap-buffer-overflow /home/hermes/work/fuzzing-jpeg2000/source/core/codestream/j2kmarkers.cpp:52:17 in j2k_marker_io_base::get_byte()",
+      "crash_stage": "ht-block-decode",
+      "exec_per_second": 0,
+      "ft": 138,
+      "outcome": "crash",
+      "policy_action_code": "record-duplicate-crash",
+      "policy_matched_triggers": [],
+      "policy_profile_severity": "critical",
+      "report": "/home/hermes/work/fuzzing-jpeg2000/fuzz-artifacts/runs/20260416_201732_1d5b676/FUZZING_REPORT.md",
+      "run_dir": "/home/hermes/work/fuzzing-jpeg2000/fuzz-artifacts/runs/20260416_201732_1d5b676",
+      "seconds_since_progress": 0.9,
+      "timeout_detected": false,
+      "updated_at": "2026-04-16T20:17:33"
+    },
+    {
+      "corpus_size": "1066b",
+      "corpus_units": 5,
+      "cov": 45,
+      "crash_fingerprint": "asan|j2kmarkers.cpp:52|heap-buffer-overflow /home/hermes/work/fuzzing-jpeg2000/source/core/codestream/j2kmarkers.cpp:52:17 in j2k_marker_io_base::get_byte()",
+      "crash_stage": "ht-block-decode",
+      "exec_per_second": 0,
+      "ft": 141,
+      "outcome": "crash",
+      "policy_action_code": "review_duplicate_crash_replay",
+      "policy_matched_triggers": [],
+      "policy_profile_severity": "critical",
+      "report": "/home/hermes/work/fuzzing-jpeg2000/fuzz-artifacts/runs/20260416_202702_1d5b676/FUZZING_REPORT.md",
+      "run_dir": "/home/hermes/work/fuzzing-jpeg2000/fuzz-artifacts/runs/20260416_202702_1d5b676",
+      "seconds_since_progress": 0.9,
+      "timeout_detected": false,
+      "updated_at": "2026-04-16T20:27:03"
+    },
+    {
+      "corpus_size": "1742b",
+      "corpus_units": 8,
+      "cov": 45,
+      "crash_fingerprint": "asan|j2kmarkers.cpp:52|heap-buffer-overflow /home/hermes/work/fuzzing-jpeg2000/source/core/codestream/j2kmarkers.cpp:52:17 in j2k_marker_io_base::get_byte()",
+      "crash_stage": "ht-block-decode",
+      "exec_per_second": 0,
+      "ft": 150,
+      "outcome": "crash",
+      "policy_action_code": "review_duplicate_crash_replay",
+      "policy_matched_triggers": [],
+      "policy_profile_severity": "critical",
+      "report": "/home/hermes/work/fuzzing-jpeg2000/fuzz-artifacts/runs/20260416_205116_1d5b676/FUZZING_REPORT.md",
+      "run_dir": "/home/hermes/work/fuzzing-jpeg2000/fuzz-artifacts/runs/20260416_205116_1d5b676",
+      "seconds_since_progress": 0.8,
+      "timeout_detected": false,
+      "updated_at": "2026-04-16T20:51:17"
+    },
+    {
+      "corpus_size": "1740b",
+      "corpus_units": 8,
+      "cov": 45,
+      "crash_fingerprint": "asan|coding_units.cpp:3076|SEGV /home/hermes/work/fuzzing-jpeg2000/source/core/coding/coding_units.cpp:3076:16 in j2k_tile::add_tile_part(SOT_marker&, j2c_src_memory&, j2k_main_header&)",
+      "crash_stage": "tile-part-load",
+      "exec_per_second": 0,
+      "ft": 152,
+      "outcome": "crash",
+      "policy_action_code": "record-duplicate-crash",
+      "policy_matched_triggers": [],
+      "policy_profile_severity": "high",
+      "report": "/home/hermes/work/fuzzing-jpeg2000/fuzz-artifacts/runs/20260416_205450_1d5b676/FUZZING_REPORT.md",
+      "run_dir": "/home/hermes/work/fuzzing-jpeg2000/fuzz-artifacts/runs/20260416_205450_1d5b676",
+      "seconds_since_progress": 1.3,
+      "timeout_detected": false,
+      "updated_at": "2026-04-16T20:54:52"
+    },
+    {
+      "corpus_size": "2368b",
+      "corpus_units": 11,
+      "cov": 47,
+      "crash_fingerprint": "asan|j2kmarkers.cpp:52|heap-buffer-overflow /home/hermes/work/fuzzing-jpeg2000/source/core/codestream/j2kmarkers.cpp:52:17 in j2k_marker_io_base::get_byte()",
+      "crash_stage": "ht-block-decode",
+      "exec_per_second": 0,
+      "ft": 170,
+      "outcome": "crash",
+      "policy_action_code": "review_duplicate_crash_replay",
+      "policy_matched_triggers": [],
+      "policy_profile_severity": "critical",
+      "report": "/home/hermes/work/fuzzing-jpeg2000/fuzz-artifacts/modes/coverage/20260416_221705_coverage/FUZZING_REPORT.md",
+      "run_dir": "/home/hermes/work/fuzzing-jpeg2000/fuzz-artifacts/modes/coverage/20260416_221705_coverage",
+      "seconds_since_progress": 1.5,
+      "timeout_detected": false,
+      "updated_at": "2026-04-16T22:17:07"
+    },
+    {
+      "corpus_size": "1593b",
+      "corpus_units": 7,
+      "cov": 53,
+      "crash_fingerprint": "asan|j2kmarkers.cpp:52|heap-buffer-overflow /home/hermes/work/fuzzing-jpeg2000/source/core/codestream/j2kmarkers.cpp:52:17 in j2k_marker_io_base::get_byte()",
+      "crash_stage": "ht-block-decode",
+      "exec_per_second": 0,
+      "ft": 153,
+      "outcome": "crash",
+      "policy_action_code": "review_duplicate_crash_replay",
+      "policy_matched_triggers": [],
+      "policy_profile_severity": "critical",
+      "report": "/home/hermes/work/fuzzing-jpeg2000/fuzz-artifacts/modes/coverage/20260416_221832_coverage/FUZZING_REPORT.md",
+      "run_dir": "/home/hermes/work/fuzzing-jpeg2000/fuzz-artifacts/modes/coverage/20260416_221832_coverage",
+      "seconds_since_progress": 0.8,
+      "timeout_detected": false,
+      "updated_at": "2026-04-16T22:18:33"
+    }
+  ],
+  "run_history_path": "/home/hermes/work/fuzzing-jpeg2000/fuzz-artifacts/automation/run_history.json",
+  "suggested_action_code": "minimize_and_reseed",
+  "suggested_candidate_route": "reseed-before-retry",
+  "suggested_next_inputs": [
+    "latest build/smoke/fuzz outcome",
+    "top failure reasons with evidence",
+    "latest harness probe/apply lineage",
+    "target scope and bounded action expectations",
+    "duplicate crash review plan and lineage"
+  ],
+  "top_failure_reason_chains": [
+    {
+      "causal_chain": "fuzz_log => fuzz_log_signal_summary=AddressSanitizer => fuzz-log-memory-safety-signal",
+      "code": "fuzz-log-memory-safety-signal"
+    },
+    {
+      "causal_chain": "current_status => repeated-crash-family",
+      "code": "repeated-crash-family"
+    }
+  ],
+  "top_failure_reason_codes": [
+    "fuzz-log-memory-safety-signal",
+    "repeated-crash-family"
+  ],
+  "top_failure_reason_explanations": [
+    {
+      "code": "fuzz-log-memory-safety-signal",
+      "explanation": "The latest fuzz log already contains sanitizer-style memory-safety signals; use that body-level clue to guide the next corrective step. Evidence focus: fuzz_log_signal_summary=AddressSanitizer from fuzz_log."
+    },
+    {
+      "code": "repeated-crash-family",
+      "explanation": "The latest crash family is repeating; reduce shallow rediscovery and push toward distinct/deeper signal."
+    }
+  ],
+  "top_failure_reason_narrative": "primary fuzz-log-memory-safety-signal sets the first corrective frame because The latest fuzz log already contains sanitizer-style memory-safety signals; use that body-level clue to guide the next corrective step. Evidence focus: fuzz_log_signal_summary=AddressSanitizer from fuzz_log.; supporting repeated-crash-family sharpens or corroborates that frame via current_status => repeated-crash-family",
+  "top_failure_reason_narrative_steps": [
+    {
+      "causal_chain": "fuzz_log => fuzz_log_signal_summary=AddressSanitizer => fuzz-log-memory-safety-signal",
+      "code": "fuzz-log-memory-safety-signal",
+      "explanation": "The latest fuzz log already contains sanitizer-style memory-safety signals; use that body-level clue to guide the next corrective step. Evidence focus: fuzz_log_signal_summary=AddressSanitizer from fuzz_log.",
+      "narrative": "primary fuzz-log-memory-safety-signal sets the first corrective frame because The latest fuzz log already contains sanitizer-style memory-safety signals; use that body-level clue to guide the next corrective step. Evidence focus: fuzz_log_signal_summary=AddressSanitizer from fuzz_log.",
+      "role": "primary"
+    },
+    {
+      "causal_chain": "current_status => repeated-crash-family",
+      "code": "repeated-crash-family",
+      "explanation": "The latest crash family is repeating; reduce shallow rediscovery and push toward distinct/deeper signal.",
+      "narrative": "supporting repeated-crash-family sharpens or corroborates that frame via current_status => repeated-crash-family",
+      "role": "supporting"
+    }
+  ]
+}

@@ -1,0 +1,43 @@
+{
+  "action_code": "minimize_and_reseed",
+  "crash_fingerprint": "asan|coding_units.cpp:3076|SEGV /home/hermes/work/fuzzing-jpeg2000/source/core/coding/coding_units.cpp:3076:16 in j2k_tile::add_tile_part(SOT_marker&, j2c_src_memory&, j2k_main_header&)",
+  "first_artifact_path": "/home/hermes/work/fuzzing-jpeg2000/fuzz-artifacts/runs/20260416_182632_1d5b676/crashes/crash-5a7442f89cdfd35db10098c2966f3b3296ab8d76",
+  "first_artifact_sha1": "5a7442f89cdfd35db10098c2966f3b3296ab8d76",
+  "first_vs_latest_bytes_equal": false,
+  "generated_at": "2026-04-16T22:09:43",
+  "json_path": "/home/hermes/work/fuzzing-jpeg2000/fuzz-records/corpus-refinement-executions/home-hermes-work-fuzzing-jpeg2000-fuzz-artifacts-runs-20260416_205450_1d5b676.json",
+  "known_bad_bucket_path": "/home/hermes/work/fuzzing-jpeg2000/fuzz/corpus/known-bad/crash-a54fa005c53939e5b74e7ab86fe5d5df98eb2f9a",
+  "known_bad_bucket_sha1": "a54fa005c53939e5b74e7ab86fe5d5df98eb2f9a",
+  "latest_artifact_path": "/home/hermes/work/fuzzing-jpeg2000/fuzz-artifacts/runs/20260416_205450_1d5b676/crashes/crash-a54fa005c53939e5b74e7ab86fe5d5df98eb2f9a",
+  "latest_artifact_sha1": "a54fa005c53939e5b74e7ab86fe5d5df98eb2f9a",
+  "markdown_path": "/home/hermes/work/fuzzing-jpeg2000/fuzz-records/corpus-refinement-executions/home-hermes-work-fuzzing-jpeg2000-fuzz-artifacts-runs-20260416_205450_1d5b676.md",
+  "regression_bucket_path": "/home/hermes/work/fuzzing-jpeg2000/fuzz/corpus/regression/crash-a54fa005c53939e5b74e7ab86fe5d5df98eb2f9a",
+  "regression_bucket_sha1": "a54fa005c53939e5b74e7ab86fe5d5df98eb2f9a",
+  "replay_harness_path": "/home/hermes/work/fuzzing-jpeg2000/build-fuzz-libfuzzer/bin/open_htj2k_deep_decode_focus_v3_harness",
+  "report_path": "/home/hermes/work/fuzzing-jpeg2000/fuzz-artifacts/runs/20260416_205450_1d5b676/FUZZING_REPORT.md",
+  "retention_replay_command": [
+    "/home/hermes/work/fuzzing-jpeg2000/build-fuzz-libfuzzer/bin/open_htj2k_deep_decode_focus_v3_harness",
+    "/home/hermes/work/fuzzing-jpeg2000/fuzz/corpus/regression/crash-a54fa005c53939e5b74e7ab86fe5d5df98eb2f9a"
+  ],
+  "retention_replay_exit_code": -6,
+  "retention_replay_log_path": "/home/hermes/work/fuzzing-jpeg2000/fuzz-records/corpus-refinement-executions/home-hermes-work-fuzzing-jpeg2000-fuzz-artifacts-runs-20260416_205450_1d5b676-retention-replay.log",
+  "retention_replay_signal_lines": [
+    "AddressSanitizer:DEADLYSIGNAL",
+    "==559395==ERROR: AddressSanitizer: SEGV on unknown address 0x516000445cb4 (pc 0x58176849dd70 bp 0x7ffe4eb1c2d0 sp 0x7ffe4eb1c200 T0)",
+    "AddressSanitizer can not provide additional info.",
+    "SUMMARY: AddressSanitizer: SEGV /home/hermes/work/fuzzing-jpeg2000/source/core/coding/coding_units.cpp:3076:16 in j2k_tile::add_tile_part(SOT_marker&, j2c_src_memory&, j2k_main_header&)"
+  ],
+  "retention_replay_signature": {
+    "artifact_path": null,
+    "artifact_sha1": null,
+    "fingerprint": "asan|coding_units.cpp:3076|SEGV /home/hermes/work/fuzzing-jpeg2000/source/core/coding/coding_units.cpp:3076:16 in j2k_tile::add_tile_part(SOT_marker&, j2c_src_memory&, j2k_main_header&)",
+    "kind": "asan",
+    "location": "coding_units.cpp:3076",
+    "summary": "SEGV /home/hermes/work/fuzzing-jpeg2000/source/core/coding/coding_units.cpp:3076:16 in j2k_tile::add_tile_part(SOT_marker&, j2c_src_memory&, j2k_main_header&)"
+  },
+  "retention_replay_status": "completed",
+  "run_dir": "/home/hermes/work/fuzzing-jpeg2000/fuzz-artifacts/runs/20260416_205450_1d5b676",
+  "status": "completed",
+  "triage_bucket_path": "/home/hermes/work/fuzzing-jpeg2000/fuzz/corpus/triage/crash-a54fa005c53939e5b74e7ab86fe5d5df98eb2f9a",
+  "triage_bucket_sha1": "a54fa005c53939e5b74e7ab86fe5d5df98eb2f9a"
+}

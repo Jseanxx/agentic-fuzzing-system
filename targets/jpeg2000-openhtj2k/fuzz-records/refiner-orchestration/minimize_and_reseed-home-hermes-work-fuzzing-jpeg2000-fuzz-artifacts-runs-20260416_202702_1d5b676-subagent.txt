@@ -1,0 +1,34 @@
+Refiner action: minimize_and_reseed
+Goal: Prepare a conservative corpus minimization and reseed plan from the latest campaign state.
+
+Context:
+- run_dir: /home/hermes/work/fuzzing-jpeg2000/fuzz-artifacts/runs/20260416_202702_1d5b676
+- report_path: /home/hermes/work/fuzzing-jpeg2000/fuzz-artifacts/runs/20260416_202702_1d5b676/FUZZING_REPORT.md
+- executor_plan_path: /home/hermes/work/fuzzing-jpeg2000/fuzz-records/refiner-plans/minimize_and_reseed-home-hermes-work-fuzzing-jpeg2000-fuzz-artifacts-runs-20260416_202702_1d5b676.md
+- current_mode: None
+- next_mode: None
+- recommended_action: Use the stable duplicate replay evidence to prepare bounded minimization and reseed planning instead of rediscovering the same crash family again.
+- selected_candidate_id: None
+- selected_entrypoint_path: None
+- selected_recommended_mode: None
+- selected_target_stage: None
+- candidate_route: reseed-before-retry
+- derived_from_action_code: review_duplicate_crash_replay
+- duplicate_replay_source_key: review_duplicate_crash_replay:asan|j2kmarkers.cpp:52|heap-buffer-overflow /home/hermes/work/fuzzing-jpeg2000/source/core/codestream/j2kmarkers.cpp:52:17 in j2k_marker_io_base::get_byte()
+- crash_fingerprint: asan|j2kmarkers.cpp:52|heap-buffer-overflow /home/hermes/work/fuzzing-jpeg2000/source/core/codestream/j2kmarkers.cpp:52:17 in j2k_marker_io_base::get_byte()
+- crash_location: j2kmarkers.cpp:52
+- crash_summary: heap-buffer-overflow /home/hermes/work/fuzzing-jpeg2000/source/core/codestream/j2kmarkers.cpp:52:17 in j2k_marker_io_base::get_byte()
+- occurrence_count: 3
+- first_artifact_path: /home/hermes/work/fuzzing-jpeg2000/fuzz-artifacts/runs/20260416_200858_1d5b676/crashes/crash-964206b1bbf197c651b1198941e6e35a8830b2bf
+- latest_artifact_path: /home/hermes/work/fuzzing-jpeg2000/fuzz-artifacts/runs/20260416_202702_1d5b676/crashes/crash-5e1dbfc1e1257014678913af52217fa8eb380818
+- replay_execution_markdown_path: /home/hermes/work/fuzzing-jpeg2000/fuzz-records/duplicate-crash-replays/home-hermes-work-fuzzing-jpeg2000-fuzz-artifacts-runs-20260416_202702_1d5b676.md
+
+Requirements:
+- Stay low-risk. Do not delete seeds, rewrite code, or force a mode switch automatically.
+- Turn the existing plan into a concise operator-ready follow-up note.
+- Include concrete verification steps and rollback notes where relevant.
+
+Verification checklist:
+- Produce self-contained maintenance instructions for a fresh Hermes session.
+- Keep the workflow reversible until a human or later runner validates the result.
+- Record post-action checks for corpus size, coverage, and crash-family retention.

@@ -1,0 +1,12 @@
+{
+  "action_code": "minimize_and_reseed",
+  "cron_prompt_path": "/home/hermes/work/fuzzing-jpeg2000/fuzz-records/refiner-orchestration/minimize_and_reseed-home-hermes-work-fuzzing-jpeg2000-fuzz-artifacts-runs-20260416_202702_1d5b676-cron.txt",
+  "dispatch_channel": "cron",
+  "executor_plan_path": "/home/hermes/work/fuzzing-jpeg2000/fuzz-records/refiner-plans/minimize_and_reseed-home-hermes-work-fuzzing-jpeg2000-fuzz-artifacts-runs-20260416_202702_1d5b676.md",
+  "prepared_at": "2026-04-16T21:37:04",
+  "recommended_action": "Use the stable duplicate replay evidence to prepare bounded minimization and reseed planning instead of rediscovering the same crash family again.",
+  "report_path": "/home/hermes/work/fuzzing-jpeg2000/fuzz-artifacts/runs/20260416_202702_1d5b676/FUZZING_REPORT.md",
+  "run_dir": "/home/hermes/work/fuzzing-jpeg2000/fuzz-artifacts/runs/20260416_202702_1d5b676",
+  "schema_version": 1,
+  "subagent_prompt_path": "/home/hermes/work/fuzzing-jpeg2000/fuzz-records/refiner-orchestration/minimize_and_reseed-home-hermes-work-fuzzing-jpeg2000-fuzz-artifacts-runs-20260416_202702_1d5b676-subagent.txt"
+}

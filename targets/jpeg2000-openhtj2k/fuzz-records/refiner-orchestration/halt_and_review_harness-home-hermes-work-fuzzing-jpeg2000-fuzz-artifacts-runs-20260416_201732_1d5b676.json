@@ -1,0 +1,12 @@
+{
+  "action_code": "halt_and_review_harness",
+  "cron_prompt_path": "/home/hermes/work/fuzzing-jpeg2000/fuzz-records/refiner-orchestration/halt_and_review_harness-home-hermes-work-fuzzing-jpeg2000-fuzz-artifacts-runs-20260416_201732_1d5b676-cron.txt",
+  "dispatch_channel": "subagent",
+  "executor_plan_path": "/home/hermes/work/fuzzing-jpeg2000/fuzz-records/refiner-plans/halt_and_review_harness-home-hermes-work-fuzzing-jpeg2000-fuzz-artifacts-runs-20260416_201732_1d5b676.md",
+  "prepared_at": "2026-04-16T20:32:03",
+  "recommended_action": "llm objective deeper-stage-reach links to halt_and_review_harness / review-current-candidate; finding recommendation=bias-llm-toward-novelty-and-stage-reach; top failure narrative=primary fuzz-log-memory-safety-signal sets the first corrective frame because The latest fuzz log already contains sanitizer-style memory-safety signals; use that body-level clue to guide the next corrective step. Evidence focus: fuzz_log_signal_summary=AddressSanitizer from fuzz_log.; supporting repeated-crash-family sharpens or corroborates that frame via current_status => repeated-crash-family; override=deep-stage-crash-already-reached | primary fuzz-log-memory-safety-signal sets the first corrective frame because The latest fuzz log already contains sanitizer-style memory-safety signals; use that body-level clue to guide the next corrective step. Evidence focus: fuzz_log_signal_summary=AddressSanitizer from fuzz_log.; supporting repeated-crash-family sharpens or corroborates that frame via current_status => repeated-crash-family | Record duplicate occurrence, keep regression coverage, and avoid over-prioritizing this known crash.",
+  "report_path": "/home/hermes/work/fuzzing-jpeg2000/fuzz-artifacts/runs/20260416_201732_1d5b676/FUZZING_REPORT.md",
+  "run_dir": "/home/hermes/work/fuzzing-jpeg2000/fuzz-artifacts/runs/20260416_201732_1d5b676",
+  "schema_version": 1,
+  "subagent_prompt_path": "/home/hermes/work/fuzzing-jpeg2000/fuzz-records/refiner-orchestration/halt_and_review_harness-home-hermes-work-fuzzing-jpeg2000-fuzz-artifacts-runs-20260416_201732_1d5b676-subagent.txt"
+}

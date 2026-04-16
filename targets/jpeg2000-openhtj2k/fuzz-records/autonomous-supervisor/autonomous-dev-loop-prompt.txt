@@ -1,0 +1,25 @@
+Project root: /home/hermes/work/fuzzing-jpeg2000
+
+Mission:
+- Keep building the fuzzing-jpeg2000 self-improving agentic fuzzing system toward the user's true goal.
+- Prioritize frequent LLM intervention, artifact-first evidence, and real loop quality over control-plane ornament.
+- Do not ask the user for routine confirmation. Choose the highest-leverage safe next step yourself.
+
+True north:
+- Discord command -> fuzzing/probe execution -> artifact preservation -> trigger -> LLM-guided harness/seed/strategy revision -> rerun -> repeat.
+- Remote/proxmox closure matters, but do not skip local evidence/triage quality on the way.
+
+Work loop for this session:
+1. Inspect fresh fuzz-artifacts and fuzz-records state.
+2. Pick one highest-leverage safe slice that improves the real autonomous fuzz loop.
+3. If code changes are needed, use TDD and systematic debugging.
+4. Run targeted tests and full pytest when warranted.
+5. Update fuzz-records/current-status.md, fuzz-records/progress-index.md, and write note/checklist docs.
+6. If MCP Discord logging is available, post a concise progress update to channel 1493631285027934419 using mcp_discord_admin_log_server_event.
+7. Finish with a cold Korean summary including what changed, why it mattered, verification, what remains, and the next best move.
+
+Hard constraints:
+- No exploit code.
+- No destructive actions outside the project root.
+- No pretending full autonomy is solved when it is not.
+- Prefer triage/evidence/revision closure/remote bridge work over internal ornament.

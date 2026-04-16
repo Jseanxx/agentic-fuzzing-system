@@ -1,0 +1,46 @@
+# 2026-04-16 — failure reason extraction v0.4 checklist
+
+- [x] v0.4 범위 결정
+  - [x] build/fuzz log signal reason 승격
+  - [x] harness probe body signal 추출
+  - [x] apply result body signal 추출
+- [x] failing test 먼저 추가
+  - [x] build/fuzz log signal이 packet reason으로 들어와야 함
+  - [x] probe/apply body signal이 packet reason으로 들어와야 함
+- [x] RED 확인
+  - [x] `build-log-memory-safety-signal` 미검출
+  - [x] `fuzz-log-memory-safety-signal` 미검출
+  - [x] `harness-probe-memory-safety-signal` 미검출
+  - [x] `apply-comment-scope-mismatch-signal` 미검출
+- [x] `llm_evidence.py` helper 확장
+  - [x] generic signal line matcher 추가
+  - [x] probe/apply text line 수집 helper 추가
+- [x] `raw_signal_summary` 확장
+  - [x] `probe_signals`
+  - [x] `probe_signal_count`
+  - [x] `apply_signals`
+  - [x] `apply_signal_count`
+  - [x] build/fuzz signal line도 markdown에 직접 노출
+- [x] 새 failure reason 추가
+  - [x] `build-log-memory-safety-signal`
+  - [x] `fuzz-log-memory-safety-signal`
+  - [x] `harness-probe-memory-safety-signal`
+  - [x] `apply-comment-scope-mismatch-signal`
+- [x] GREEN 확인
+  - [x] `python -m pytest tests/test_hermes_watch.py::HermesWatchLLMEvidencePacketV04Tests -q` → 2 passed
+- [x] syntax 검증
+  - [x] `python -m py_compile scripts/hermes_watch_support/llm_evidence.py tests/test_hermes_watch.py` → OK
+- [x] focused regression 검증
+  - [x] `python -m pytest tests/test_hermes_watch.py::HermesWatchLLMEvidencePacketV03Tests tests/test_hermes_watch.py::HermesWatchLLMEvidencePacketV04Tests -q` → 4 passed
+- [x] file-level regression 검증
+  - [x] `python -m pytest tests/test_hermes_watch.py -q` → 244 passed
+- [x] full regression 검증
+  - [x] `python -m pytest tests -q` → 263 passed
+- [x] 실제 packet 재생성 확인
+  - [x] `python scripts/hermes_watch.py --repo /home/hermes/work/fuzzing-jpeg2000 --write-llm-evidence-packet` → 성공
+- [x] status / progress / note / checklist 갱신
+
+## 냉정한 판정
+- [x] evidence packet이 body-level signal면을 더 넓게 읽기 시작했다
+- [x] 하지만 아직 semantic diagnosis가 아니라 pattern-heavy collector다
+- [x] 다음은 signal 추가보다 output contract와 diagnosis 압축 품질을 다듬는 게 더 중요하다

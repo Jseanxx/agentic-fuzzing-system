@@ -1,0 +1,607 @@
+schema_version: target-profile/v1
+
+meta:
+  name: openhtj2k-target-profile-v1
+  display_name: OpenHTJ2K JPEG2000 decode-focused fuzzing profile
+  owner: hermes
+  created_at: 2026-04-15T07:25:00+09:00
+  updated_at: 2026-04-16T22:19:23+09:00
+  status: active
+  confidence: medium
+  source_documents:
+    - /home/hermes/work/fuzzing-jpeg2000/.hermes/plans/2026-04-15_072500-target-profile-schema-v1.md
+    - /home/hermes/work/fuzzing-jpeg2000/fuzz-records/notes/2026-04-15-agentic-fuzzing-trigger-strategy-summary.md
+  scope:
+    objective: find defense-relevant memory-safety crashes with emphasis on deeper decode/lifecycle paths rather than shallow parser-only noise
+    non_goals:
+      - exploit development
+      - offensive weaponization
+      - autopilot code mutation without trigger evidence
+
+target:
+  family: media-decoder
+  format: jpeg2000
+  project: openhtj2k
+  implementation_language:
+    - c++
+    - c
+  repo:
+    local_path: /home/hermes/work/fuzzing-jpeg2000
+    remote_path: /home/js/work/fuzzing-jpeg2000
+    remote_host_alias: proxmox-js
+    remote_user: js
+  engines:
+    primary: aflpp
+    secondary: libfuzzer
+  current_campaign:
+    primary_mode: deep-decode-v3
+    primary_binary: open_htj2k_deep_decode_focus_v3_harness
+    local_binary_path: /home/hermes/work/fuzzing-jpeg2000/build-fuzz-aflpp/bin/open_htj2k_deep_decode_focus_v3_harness
+    remote_binary_path: /home/js/work/fuzzing-jpeg2000/build-fuzz-aflpp/bin/open_htj2k_deep_decode_focus_v3_harness
+    watcher_name: openhtj2k-deep-decode-v3-watch-r2
+    current_run_root: /home/js/work/fuzzing-jpeg2000-runs/deep-decode-v3-20260415_072003
+  adapter:
+    key: openhtj2k-deep-decode-v3
+    notification_label: OpenHTJ2K deep-decode-v3 fuzz
+    report_target: open_htj2k_deep_decode_focus_v3_harness
+    build_command:
+      - bash
+      - scripts/build-libfuzzer.sh
+    smoke_binary_relpath: build-fuzz-libfuzzer/bin/open_htj2k_deep_decode_focus_v3_harness
+    smoke_command_prefix:
+      - bash
+      - scripts/run-smoke.sh
+    fuzz_command:
+      - bash
+      - -lc
+      - FUZZER_BIN=${FUZZER_BIN:-build-fuzz-libfuzzer/bin/open_htj2k_deep_decode_focus_v3_fuzzer} CORPUS_DIR=${CORPUS_DIR:-fuzz/corpus-afl/deep-decode-v3} bash scripts/run-fuzzer.sh
+  sanitizers:
+    default: asan
+    optional:
+      - ubsan
+  environment:
+    run_root_base: /home/js/work/fuzzing-jpeg2000-runs
+    notes_root_remote: /home/js/work/fuzzing-jpeg2000-notes
+    records_root_local: /home/hermes/work/fuzzing-jpeg2000/fuzz-records
+    discord_channel_name: jpeg2000-openhtj2k
+    discord_channel_id: "1493631285027934419"
+
+stages:
+  - id: parse-main-header
+    description: main codestream header and marker parsing
+    depth_rank: 1
+    stage_class: shallow
+    expected_signals:
+      - COM_marker
+      - SIZ_marker
+      - DFS_marker
+      - j2k_main_header::read
+      - j2k_marker_io_base::get_byte
+    known_artifacts:
+      - parser heap-buffer-overflow read
+      - parser SEGV
+      - early reject
+
+  - id: tile-part-load
+    description: tile-part ingestion, allocation, and state setup
+    depth_rank: 2
+    stage_class: medium
+    expected_signals:
+      - j2k_tile::add_tile_part
+      - create_tile_buf
+      - coding_units.cpp
+    known_artifacts:
+      - write-flavor SEGV
+      - allocation/state corruption
+
+  - id: line-based-decode
+    description: line-based decode path and related resolution setup
+    depth_rank: 3
+    stage_class: deep
+    expected_signals:
+      - j2k_tile::decode_line_based
+      - j2k_resolution::create_subbands
+    known_artifacts:
+      - heap-buffer-overflow
+      - deeper decode SEGV
+
+  - id: ht-block-decode
+    description: HT block entropy decode and block-level transform flow
+    depth_rank: 4
+    stage_class: deep
+    expected_signals:
+      - htj2k_decode
+      - ht_block_decoding.cpp
+    known_artifacts:
+      - stack-buffer-overflow
+      - heap-buffer-overflow
+
+  - id: idwt-transform
+    description: inverse transform, row pull, and post-entropy decode processing
+    depth_rank: 5
+    stage_class: deep
+    expected_signals:
+      - idwt
+      - pull_row
+      - idwt_2d_state_pull_row_ref
+    known_artifacts:
+      - transform-state corruption
+      - row/stride related memory fault
+
+  - id: cleanup-finalize
+    description: teardown, destroy, cleanup, and lifecycle finalization
+    depth_rank: 6
+    stage_class: deep
+    expected_signals:
+      - finalize
+      - destroy
+      - cleanup
+    known_artifacts:
+      - use-after-free candidate
+      - double-free candidate
+      - invalid-free candidate
+
+hotspots:
+  files:
+    - path: source/core/transform/ht_block_decoding.cpp
+      priority: critical
+      stage: ht-block-decode
+      rationale: strongest current signal for stack/heap corruption in deeper decode path
+      known_frames:
+        - source/core/transform/ht_block_decoding.cpp:1126
+        - source/core/transform/ht_block_decoding.cpp:1151
+
+    - path: source/core/coding/coding_units.cpp
+      priority: critical
+      stage: tile-part-load
+      rationale: tile lifecycle, subband creation, and line-based decode state transitions
+      known_frames:
+        - source/core/coding/coding_units.cpp:1915
+        - source/core/coding/coding_units.cpp:3076
+        - source/core/coding/coding_units.cpp:4661
+
+    - path: source/core/transform/idwt.cpp
+      priority: high
+      stage: idwt-transform
+      rationale: deeper transform path worth biasing toward when reachable
+
+    - path: source/core/codestream/j2kmarkers.cpp
+      priority: medium
+      stage: parse-main-header
+      rationale: produces many crashes but overly shallow and noisy as a dominant signal
+      known_frames:
+        - source/core/codestream/j2kmarkers.cpp:52
+        - source/core/codestream/j2kmarkers.cpp:190
+        - source/core/codestream/j2kmarkers.cpp:544
+        - source/core/codestream/j2kmarkers.cpp:553
+        - source/core/codestream/j2kmarkers.cpp:1825
+
+    - path: source/core/codestream/codestream_source.cpp
+      priority: medium
+      stage: parse-main-header
+      rationale: common parser-side heap read overflow location; informative but not high-value by itself
+      known_frames:
+        - source/core/codestream/codestream_source.cpp:58
+
+  functions:
+    - name: j2k_tile::add_tile_part
+      stage: tile-part-load
+      severity_bias: critical
+      value_rationale: write-flavor and lifecycle corruption candidate in deeper path
+
+    - name: j2k_tile::decode_line_based
+      stage: line-based-decode
+      severity_bias: high
+      value_rationale: line-based deep decode path, more valuable than parser-only faults
+
+    - name: j2k_resolution::create_subbands
+      stage: line-based-decode
+      severity_bias: high
+      value_rationale: subband construction faults may indicate deeper structural corruption
+
+    - name: htj2k_decode
+      stage: ht-block-decode
+      severity_bias: critical
+      value_rationale: strongest current target for high-value stack/heap corruption
+
+    - name: idwt_2d_state_pull_row_ref
+      stage: idwt-transform
+      severity_bias: high
+      value_rationale: transform-state path likely to expose nontrivial memory safety issues
+
+    - name: openhtj2k_decoder::parse
+      stage: parse-main-header
+      severity_bias: medium
+      value_rationale: useful for signal gathering but should not dominate campaign decisions
+
+seeds:
+  root_dirs:
+    parse: fuzz/corpus-afl/parse
+    cleanup: fuzz/corpus-afl/cleanup
+    decode: fuzz/corpus-afl/decode
+    deep_decode_v2: fuzz/corpus-afl/deep-decode-v2
+    deep_decode_v3: fuzz/corpus-afl/deep-decode-v3
+  classes:
+    stable-valid:
+      description: overnight baseline seeds that keep the harness stable and reach deeper decoding
+      required: true
+      examples:
+        - p0_11.j2k
+        - ds0_ht_12_b11.j2k
+      preferred_modes:
+        - deep-decode-v3
+        - deep-decode-v2
+        - decode
+
+    near-valid-tailcut:
+      description: tail-cut seeds intended to preserve entry into deeper logic before failure
+      required: true
+      examples:
+        - ds0_ht_12_b11.tailcut-focus.j2k
+        - ds0_ht_12_b11.tailcut-deep.j2k
+      preferred_modes:
+        - deep-decode-v3
+        - deep-decode-v2
+
+    late-bodyflip:
+      description: preserve earlier headers while perturbing later codestream/body behavior
+      required: false
+      examples:
+        - p0_11.latebodyflip.j2k
+      preferred_modes:
+        - deep-decode-v3
+
+    parser-truncation:
+      description: intentionally shallow parser stress seeds for baseline signal collection and regression checks
+      required: false
+      examples:
+        - trunc16
+        - trunc32
+        - trunc64
+      preferred_modes:
+        - parse
+
+    toxic:
+      description: seeds that rapidly poison throughput or produce low-value hang/OOM/crash spam
+      required: false
+      quarantine_required: true
+      examples: []
+
+  policy:
+    main_campaign_allow:
+      - stable-valid
+      - near-valid-tailcut
+      - late-bodyflip
+    slow_lane_only:
+      - toxic
+    parser_regression_only:
+      - parser-truncation
+    selection_bias:
+      prefer_classes:
+        - stable-valid
+        - near-valid-tailcut
+      avoid_dominance_of:
+        - parser-truncation
+        - toxic
+
+signals:
+  coverage:
+    primary:
+      - bitmap_cvg
+      - edges_found
+      - corpus_found
+      - corpus_count
+    interpretation:
+      plateau_window_minutes: 180
+      desired_behavior: slow but continuing growth in deep-decode-v3 is acceptable if accompanied by new deep-stage hits or distinct crash families
+
+  crash:
+    primary:
+      - saved_crashes
+      - unique_crash_families
+      - reproducible_crash_families
+      - top_frame_distribution
+      - sanitizer_distribution
+    interpretation:
+      desired_behavior: distinct deep-stage families matter more than raw crash count
+
+  performance:
+    primary:
+      - execs_per_sec
+      - total_tmout
+      - saved_hangs
+      - peak_rss_mb
+      - time_wo_finds
+    interpretation:
+      warning_if_execs_per_sec_below: 50
+
+  quality:
+    primary:
+      - stability
+      - queue_growth_rate
+      - corpus_growth_rate
+      - repro_success_rate
+    interpretation:
+      desired_stability_percent: 100
+      minimum_acceptable_stability_percent: 95
+
+  semantic:
+    primary:
+      - dominant_stage
+      - stage_hit_distribution
+      - deep_stage_hit_rate
+      - high_value_stack_ratio
+      - shallow_vs_deep_crash_ratio
+    interpretation:
+      deep_stages:
+        - tile-part-load
+        - line-based-decode
+        - ht-block-decode
+        - idwt-transform
+        - cleanup-finalize
+
+triggers:
+  coverage_plateau:
+    enabled: true
+    condition:
+      plateau_minutes: 180
+      min_execs_per_sec: 50
+      max_new_high_value_crashes: 0
+    action: propose_harness_revision
+
+  shallow_crash_dominance:
+    enabled: true
+    condition:
+      dominant_stage: parse-main-header
+      min_ratio: 0.70
+      min_crash_families: 10
+    action: shift_weight_to_deeper_harness
+
+  timeout_surge:
+    enabled: true
+    condition:
+      min_timeout_rate: 0.10
+      min_duration_minutes: 60
+    action: split_slow_lane
+
+  corpus_bloat_low_gain:
+    enabled: true
+    condition:
+      min_corpus_growth: 200
+      max_coverage_gain_percent: 0.5
+    action: minimize_and_reseed
+
+  stability_drop:
+    enabled: true
+    condition:
+      min_stability_percent: 95
+    action: halt_and_review_harness
+
+  deep_write_crash:
+    enabled: true
+    condition:
+      min_stage_depth_rank: 2
+      sanitizer_match:
+        - use-after-free
+        - double-free
+        - invalid-free
+        - stack-buffer-overflow
+        - heap-buffer-overflow-write
+        - segv-write
+    action: high_priority_alert
+
+  deep_signal_emergence:
+    enabled: true
+    condition:
+      stage_any_of:
+        - ht-block-decode
+        - idwt-transform
+        - cleanup-finalize
+      min_new_reproducible_families: 1
+    action: continue_and_prioritize_triage
+
+actions:
+  propose_harness_revision:
+    type: recommendation
+    requires_human_review: false
+    outputs:
+      - hotspot_summary
+      - candidate_harness_changes
+      - seed_recommendations
+      - stage_bias_recommendation
+
+  shift_weight_to_deeper_harness:
+    type: scheduler_change
+    requires_human_review: false
+    outputs:
+      - new_primary_mode
+      - candidate_mode_order
+      - seed_class_reweighting
+    preferred_new_primary_mode: deep-decode-v3
+
+  split_slow_lane:
+    type: campaign_split
+    requires_human_review: false
+    outputs:
+      - slow_seed_quarantine
+      - timeout_profile_change
+      - separate_run_root_plan
+
+  minimize_and_reseed:
+    type: corpus_maintenance
+    requires_human_review: false
+    outputs:
+      - minimized_corpus
+      - dropped_seed_report
+      - reseed_plan
+
+  halt_and_review_harness:
+    type: safety_stop
+    requires_human_review: true
+    outputs:
+      - instability_report
+      - suspected_nondeterminism_sources
+
+  high_priority_alert:
+    type: alert
+    requires_human_review: false
+    outputs:
+      - discord_log
+      - repro_bundle
+      - triage_note
+      - stack_summary
+
+  continue_and_prioritize_triage:
+    type: continue_run
+    requires_human_review: false
+    outputs:
+      - triage_priority_update
+      - watcher_priority_escalation
+
+crash_policy:
+  buckets:
+    critical:
+      - use-after-free
+      - double-free
+      - invalid-free
+      - stack-buffer-overflow
+      - segv-write
+
+    high:
+      - heap-buffer-overflow-write
+      - heap-buffer-overflow
+      - add_tile_part-write
+      - ht-block-decode-overflow
+      - create_subbands-overflow
+
+    medium:
+      - segv-read
+      - null-deref-deep-stage
+      - fpe-in-decode-stage
+      - deeper decode ASan read overflow
+
+    low:
+      - parser-shallow-null-deref
+      - unstable-nonrepro-crash
+      - pure-oom
+      - parser-only heap read overflow
+
+  stage_bias:
+    parse-main-header: demote_if_only_read_flavor
+    tile-part-load: raise_if_write_flavor
+    line-based-decode: raise
+    ht-block-decode: strongly_raise
+    idwt-transform: strongly_raise
+    cleanup-finalize: strongly_raise
+
+  dedup_key:
+    - sanitizer_type
+    - top_file_line
+    - top_function
+    - next_two_frames
+
+  current_assessment:
+    parser_campaign:
+      total_crashes_observed: 129
+      very_high_value_count: 0
+      risk_signal_count: 11
+      medium_memory_safety_count: 88
+      unclassified_count: 30
+      interpretation: useful collector but too shallow for long-term primary use
+    deep_decode_v2:
+      total_crashes_observed: 305
+      hangs_observed: 117
+      notable_signals:
+        - stack-buffer-overflow in ht_block_decoding.cpp:1126
+        - write-flavor/deeper SEGV in j2k_tile::add_tile_part
+        - deeper heap-buffer-overflow in create_subbands and htj2k_decode
+      interpretation: significantly better deep-path signal but with more hang pressure
+    deep_decode_v3:
+      notable_signals:
+        - write-flavor SEGV in j2k_tile::add_tile_part
+        - more disciplined deep decode focus than v2
+      interpretation: best current operational default for overnight deep-signal hunting
+
+runtime_policy:
+  campaign_windows:
+    smoke_minutes: 30
+    short_eval_minutes: 120
+    overnight_hours: 8
+
+  engine_defaults:
+    aflpp:
+      timeout_ms: 1000
+      memory_limit: none
+      no_ui: true
+      env:
+        AFL_SKIP_CPUFREQ: "1"
+        AFL_AUTORESUME: "1"
+        AFL_I_DONT_CARE_ABOUT_MISSING_CRASHES: "1"
+        AFL_NO_UI: "1"
+    libfuzzer:
+      use_case: short sanity, stack confirmation, and harness smoke
+
+  sanitizer_defaults:
+    asan:
+      symbolize: 0
+      detect_leaks: 0
+    shared_requirements:
+      - use -m none with afl++ when ASan is enabled
+
+  stop_conditions:
+    - repeated_instability
+    - crash_repro_failure_spike
+    - timeout_surge_without_new_deep_signal
+
+  continue_conditions:
+    - deep_stage_coverage_rising
+    - new_high_value_crash_family_found
+    - deep_signal_emergence
+
+telemetry:
+  stage_counters:
+    enabled: true
+    names:
+      - parse-main-header
+      - tile-part-load
+      - line-based-decode
+      - ht-block-decode
+      - idwt-transform
+      - cleanup-finalize
+
+  stack_tagging:
+    enabled: true
+    file_to_stage_map: true
+    stage_file_map:
+      parse-main-header:
+        - source/core/codestream/j2kmarkers.cpp
+        - source/core/codestream/codestream_source.cpp
+      tile-part-load:
+        - source/core/coding/coding_units.cpp
+      line-based-decode:
+        - source/core/coding/coding_units.cpp
+      ht-block-decode:
+        - source/core/transform/ht_block_decoding.cpp
+      idwt-transform:
+        - source/core/transform/idwt.cpp
+      cleanup-finalize:
+        - source/core/coding
+        - source/core/common
+
+  reports:
+    discord_logging: true
+    markdown_status_note: true
+    current_watcher_delivery: target-channel-only-for-meaningful-new-crashes
+
+notes:
+  current_best_mode: deep-decode-v3
+  rationale: v3 preserves valid-seed stability while biasing toward deeper decode/lifecycle signals and suppressing some shallow metadata noise seen in v2
+  hard_truths:
+    - raw crash count is not success if dominated by parser shallow families
+    - coverage alone is insufficient without stage-aware interpretation
+    - human-in-the-loop remains the right operating model here
+  next_priorities:
+    - automate stage tagging from stacks
+    - improve crash family dedup quality
+    - connect target profile to watcher/refiner logic
+    - experiment with compare tracing and dictionary support under profile control

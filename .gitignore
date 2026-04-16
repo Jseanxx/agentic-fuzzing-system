@@ -1,48 +1,48 @@
-# Prerequisites
-*.d
+# Umbrella repo ignores
 
-# Compiled Object files
+# Local agent state
+.hermes/
+
+# Python caches
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Editors
+.vscode/
+.idea/
+
+# Build outputs
+build/
+build*/
+bin/
+cmake-build-*/
+
+# Native artifacts
+*.d
 *.slo
 *.lo
 *.o
 *.obj
-
-# Precompiled Headers
 *.gch
 *.pch
-
-# Compiled Dynamic libraries
 *.so
 *.dylib
 *.dll
-
-# Fortran module files
 *.mod
 *.smod
-
-# Compiled Static libraries
 *.lai
 *.la
 *.a
 *.lib
-
-# Executables
 *.exe
 *.out
 *.app
 
-# VSCode
-.vscode/
-
-# CLion
-.idea/
-
-# Build directory
-build/
-build*/
-
-# Bin directory
-bin/
+# Perf junk
 perf.data
 perf.data.old
+
+# Fuzzing generated artifacts (keep selected crash samples and fuzz-records under version control)
 fuzz-artifacts/
+targets/**/fuzz-records/**/*.log

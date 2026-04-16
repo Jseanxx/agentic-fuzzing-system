@@ -1,0 +1,10 @@
+Read the delegate_task request JSON from the path below and execute it immediately.
+request_path: /home/hermes/work/fuzzing-jpeg2000/fuzz-records/refiner-dispatch/halt_and_review_harness-home-hermes-work-fuzzing-jpeg2000-fuzz-artifacts-runs-20260416_201732_1d5b676-delegate-request.json
+action_code: halt_and_review_harness
+Requirements:
+- Use the file tool to read the JSON.
+- If the request includes llm_evidence_json_path or llm_evidence_markdown_path in context, read that evidence before dispatching.
+- Prioritize failure_reasons and llm_objective over older generic bridge assumptions when forming the delegated task.
+- Call delegate_task with the exact goal/context/toolsets/skills from that file.
+- Return a compact status including success/failure and any dispatch identifier you can observe.
+- Do not mutate corpus or source files unless the delegated task explicitly requires safe inspection only.

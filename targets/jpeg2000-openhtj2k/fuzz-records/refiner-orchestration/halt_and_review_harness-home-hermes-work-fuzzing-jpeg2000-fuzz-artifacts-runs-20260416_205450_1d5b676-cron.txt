@@ -1,0 +1,25 @@
+This is a self-contained refiner follow-up prompt for a fresh Hermes session.
+Action code: halt_and_review_harness
+Primary goal: Review harness stability and produce a deterministic debugging checklist for the suspicious run.
+
+Known context:
+- run_dir: /home/hermes/work/fuzzing-jpeg2000/fuzz-artifacts/runs/20260416_205450_1d5b676
+- report_path: /home/hermes/work/fuzzing-jpeg2000/fuzz-artifacts/runs/20260416_205450_1d5b676/FUZZING_REPORT.md
+- executor_plan_path: /home/hermes/work/fuzzing-jpeg2000/fuzz-records/refiner-plans/halt_and_review_harness-home-hermes-work-fuzzing-jpeg2000-fuzz-artifacts-runs-20260416_205450_1d5b676.md
+- recommended_action: llm objective deeper-stage-reach links to halt_and_review_harness / review-current-candidate; finding recommendation=bias-llm-toward-novelty-and-stage-reach; top failure narrative=primary fuzz-log-memory-safety-signal sets the first corrective frame because The latest fuzz log already contains sanitizer-style memory-safety signals; use that body-level clue to guide the next corrective step. Evidence focus: fuzz_log_signal_summary=AddressSanitizer from fuzz_log.; supporting repeated-crash-family sharpens or corroborates that frame via current_status => repeated-crash-family; override=deep-stage-crash-already-reached | primary fuzz-log-memory-safety-signal sets the first corrective frame because The latest fuzz log already contains sanitizer-style memory-safety signals; use that body-level clue to guide the next corrective step. Evidence focus: fuzz_log_signal_summary=AddressSanitizer from fuzz_log.; supporting repeated-crash-family sharpens or corroborates that frame via current_status => repeated-crash-family | Record duplicate occurrence, keep regression coverage, and avoid over-prioritizing this known crash.
+- current_mode: deep-decode-v3
+- next_mode: triage
+- selected_candidate_id: evidence-review:home-hermes-work-fuzzing-jpeg2000-fuzz-artifacts-runs-20260416_205450_1d5b676
+- selected_entrypoint_path: None
+- selected_recommended_mode: None
+- selected_target_stage: tile-part-load
+
+Constraints:
+- Keep this low-risk and reversible.
+- No destructive corpus mutation, no code edits, and no irreversible file moves.
+- Produce a short execution note or command plan that a human can review.
+
+Verification checklist:
+- Focus on harness determinism, shallow duplicate-heavy crashes, and reproducibility signals.
+- Do not modify code directly unless a later reviewer approves the exact patch.
+- End with concrete follow-up tasks the main operator can execute safely.

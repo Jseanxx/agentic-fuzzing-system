@@ -1,0 +1,41 @@
+{
+  "action_code": "minimize_and_reseed",
+  "crash_fingerprint": "asan|j2kmarkers.cpp:52|heap-buffer-overflow /home/hermes/work/fuzzing-jpeg2000/source/core/codestream/j2kmarkers.cpp:52:17 in j2k_marker_io_base::get_byte()",
+  "first_artifact_path": "/home/hermes/work/fuzzing-jpeg2000/fuzz-artifacts/runs/20260416_200858_1d5b676/crashes/crash-964206b1bbf197c651b1198941e6e35a8830b2bf",
+  "first_artifact_sha1": "964206b1bbf197c651b1198941e6e35a8830b2bf",
+  "first_vs_latest_bytes_equal": false,
+  "generated_at": "2026-04-16T21:49:40",
+  "json_path": "/home/hermes/work/fuzzing-jpeg2000/fuzz-records/corpus-refinement-executions/home-hermes-work-fuzzing-jpeg2000-fuzz-artifacts-runs-20260416_202702_1d5b676.json",
+  "known_bad_bucket_path": "/home/hermes/work/fuzzing-jpeg2000/fuzz/corpus/known-bad/crash-5e1dbfc1e1257014678913af52217fa8eb380818",
+  "known_bad_bucket_sha1": "5e1dbfc1e1257014678913af52217fa8eb380818",
+  "latest_artifact_path": "/home/hermes/work/fuzzing-jpeg2000/fuzz-artifacts/runs/20260416_202702_1d5b676/crashes/crash-5e1dbfc1e1257014678913af52217fa8eb380818",
+  "latest_artifact_sha1": "5e1dbfc1e1257014678913af52217fa8eb380818",
+  "markdown_path": "/home/hermes/work/fuzzing-jpeg2000/fuzz-records/corpus-refinement-executions/home-hermes-work-fuzzing-jpeg2000-fuzz-artifacts-runs-20260416_202702_1d5b676.md",
+  "regression_bucket_path": "/home/hermes/work/fuzzing-jpeg2000/fuzz/corpus/regression/crash-5e1dbfc1e1257014678913af52217fa8eb380818",
+  "regression_bucket_sha1": "5e1dbfc1e1257014678913af52217fa8eb380818",
+  "replay_harness_path": "/home/hermes/work/fuzzing-jpeg2000/build-fuzz-libfuzzer/bin/open_htj2k_deep_decode_focus_v3_harness",
+  "report_path": "/home/hermes/work/fuzzing-jpeg2000/fuzz-artifacts/runs/20260416_202702_1d5b676/FUZZING_REPORT.md",
+  "retention_replay_command": [
+    "/home/hermes/work/fuzzing-jpeg2000/build-fuzz-libfuzzer/bin/open_htj2k_deep_decode_focus_v3_harness",
+    "/home/hermes/work/fuzzing-jpeg2000/fuzz/corpus/regression/crash-5e1dbfc1e1257014678913af52217fa8eb380818"
+  ],
+  "retention_replay_exit_code": -6,
+  "retention_replay_log_path": "/home/hermes/work/fuzzing-jpeg2000/fuzz-records/corpus-refinement-executions/home-hermes-work-fuzzing-jpeg2000-fuzz-artifacts-runs-20260416_202702_1d5b676-retention-replay.log",
+  "retention_replay_signal_lines": [
+    "==557277==ERROR: AddressSanitizer: heap-buffer-overflow on address 0x5110000000f1 at pc 0x5f6995885e7b bp 0x7fffafc33520 sp 0x7fffafc33518",
+    "SUMMARY: AddressSanitizer: heap-buffer-overflow /home/hermes/work/fuzzing-jpeg2000/source/core/codestream/j2kmarkers.cpp:52:17 in j2k_marker_io_base::get_byte()"
+  ],
+  "retention_replay_signature": {
+    "artifact_path": null,
+    "artifact_sha1": null,
+    "fingerprint": "asan|j2kmarkers.cpp:52|heap-buffer-overflow /home/hermes/work/fuzzing-jpeg2000/source/core/codestream/j2kmarkers.cpp:52:17 in j2k_marker_io_base::get_byte()",
+    "kind": "asan",
+    "location": "j2kmarkers.cpp:52",
+    "summary": "heap-buffer-overflow /home/hermes/work/fuzzing-jpeg2000/source/core/codestream/j2kmarkers.cpp:52:17 in j2k_marker_io_base::get_byte()"
+  },
+  "retention_replay_status": "completed",
+  "run_dir": "/home/hermes/work/fuzzing-jpeg2000/fuzz-artifacts/runs/20260416_202702_1d5b676",
+  "status": "completed",
+  "triage_bucket_path": "/home/hermes/work/fuzzing-jpeg2000/fuzz/corpus/triage/crash-5e1dbfc1e1257014678913af52217fa8eb380818",
+  "triage_bucket_sha1": "5e1dbfc1e1257014678913af52217fa8eb380818"
+}
