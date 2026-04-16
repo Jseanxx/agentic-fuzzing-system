@@ -1,14 +1,14 @@
 # Current Fuzzing System Status
 
-- Updated: 2026-04-16 22:19:23 KST
+- Updated: 2026-04-16 22:35:52 KST
 - Project: `fuzzing-jpeg2000`
-- Current objective: **실제 active fuzz rerun이 wrapper가 의도한 corpus/mode를 정말 따르도록 runtime corpus contract를 맞추고, 그 위에서 reseed effectiveness를 계측하는 것**
-- Current phase: **deep-decode-v3 runtime corpus override alignment v0.1 적용: target profile의 hard-pinned corpus contract를 env-override friendly로 바꿔 `run-fuzz-mode.sh`가 말뿐인 wrapper가 아니라 실제 triage/coverage/regression corpus를 전달하는 단계**
+- Current objective: **active coverage corpus를 실제 deep-decode-v3 목표에 맞게 정리해 shallow duplicate 재발견 압력을 낮추고, 그 결과로 잡힌 더 가치 있는 signal을 preservation/replay/reseed loop로 다시 연결하는 것**
+- Current phase: **profile-curated coverage corpus quarantine v0.1 적용: target profile의 preferred seed classes를 active coverage corpus에 실제 반영하고, 설명력 낮은 opaque coverage seeds를 quarantine으로 밀어내 true north의 rerun 입력 품질을 바로잡는 단계**
 
 ---
 
 ## 한 줄 결론
-**지금 시스템은 `minimize_and_reseed`로 보존한 corpus bucket과 실제 rerun wrapper 사이에 있던 끊긴 고리 하나를 메웠다. deep-decode-v3 profile이 더 이상 `fuzz/corpus-afl/deep-decode-v3`를 강제로 박아두지 않아서, `run-fuzz-mode.sh`가 지정한 corpus가 실제 fuzzer까지 전달된다. 즉 control-plane 문서가 아니라 real rerun contract를 바로잡은 단계다.**
+**runtime corpus override를 먹인 뒤에도 active coverage corpus 자체가 opaque seed 5개에 끌려가고 있었다. 이번에는 `sync_corpus_from_registries(...)`가 target profile preferred seeds를 coverage에 실제 채우고 비선호 opaque seeds를 `coverage-quarantine/`으로 치워, bounded coverage rerun이 더 이상 `j2kmarkers.cpp:52` duplicate만 반복하지 않고 `coding_units.cpp:3076` medium-stage signal로 바로 이동하게 만들었다. 즉 wrapper contract 다음에 남아 있던 real rerun input quality bug를 닫은 단계다.**
 
 ## 지금 어디까지 왔나
 
@@ -46,6 +46,63 @@
 ---
 
 ## 최근 핵심 완료 단계
+
+### Profile-curated coverage corpus quarantine v0.1
+- root cause:
+  - runtime corpus override alignment 이후 bounded coverage rerun은 실제로 `fuzz/corpus/coverage`를 읽기 시작했지만, active coverage corpus 안에는 이름만 hash인 opaque seed 5개와 stable seed 2개가 섞여 있었다.
+  - 이 opaque seeds는 단독 harness replay에서는 crash를 바로 재현하지 않지만, stage exception / marker warning 위주로 설명력이 낮았고 target profile이 의도한 preferred seed classes와도 연결되지 않았다.
+  - 즉 watcher는 known-bad/regression bucket은 동기화해도 active coverage corpus 자체는 전혀 정리하지 않았고, true north 기준으로 `artifact preservation/reseed -> rerun`의 마지막 입력이 여전히 noisy했다.
+- diagnosis:
+  - `primary_bottleneck`: active coverage corpus quality debt
+  - `secondary_bottlenecks`: shallow duplicate dominance, profile seed contract 미소비, rerun input explainability 부족
+  - `recommended_revision_direction`: target profile preferred seed classes를 active coverage corpus에 반영하고 opaque seeds는 quarantine으로 분리
+  - `do_not_do`: 하네스 코드를 건드리며 corpus 문제를 구조 문제로 오판하지 말 것
+- 이번에 고친 것:
+  - `scripts/hermes_watch.py`
+    - `sync_preferred_coverage_corpus(...)` 추가
+    - target profile의 `seeds.classes[*].preferred_modes` / `examples`를 읽어 active coverage corpus를 curated set으로 동기화
+    - example seed가 root dir에 없어도 regression/triage/valid/conformance_data 등 repo 내부 fallback path에서 복구
+    - preferred set이 존재할 때만 비선호 coverage seed를 `fuzz/corpus/coverage-quarantine/`으로 이동해 artifact를 보존하면서 active corpus를 정리
+    - `sync_corpus_from_registries(...)`가 위 coverage curation 결과를 `coverage`, `coverage_quarantine` update로 반영
+  - `tests/test_hermes_watch.py`
+    - profile examples 기준 coverage curation + quarantine regression test 추가
+    - repo fallback seed resolution regression test 추가
+- critique:
+  - broad delete 대신 quarantine move를 택해서 rollback/evidence 보존 가능성을 유지했다.
+  - preferred seed set이 비어 있으면 quarantine을 하지 않도록 막아 empty corpus 위험을 줄였다.
+  - 즉 이번 수정은 harness ornament가 아니라 rerun input quality에만 국한된 bounded change다.
+- 검증:
+  - RED:
+    - `pytest -q tests/test_hermes_watch.py -k 'curates_coverage_corpus_from_profile_examples or falls_back_to_existing_repo_seed_for_profile_example'` → 2 fail
+    - 실패 이유: `sync_corpus_from_registries(...)`가 coverage corpus를 전혀 다루지 않았음
+  - GREEN:
+    - 같은 명령 재실행 → 2 pass
+    - `pytest -q` → 333 pass
+  - live verification:
+    - `sync_corpus_from_registries(...)` 실제 실행 결과: `{'updated': ['coverage', 'coverage_quarantine']}`
+    - active coverage corpus:
+      - `p0_11.j2k`
+      - `p0_11.latebodyflip.j2k`
+      - `ds0_ht_12_b11.j2k`
+      - `ds0_ht_12_b11.tailcut-focus.j2k`
+      - `ds0_ht_12_b11.tailcut-deep.j2k`
+    - quarantine:
+      - opaque coverage seeds 5개가 `fuzz/corpus/coverage-quarantine/`로 이동
+    - post-run analysis:
+      - `MAX_TOTAL_TIME=8 bash scripts/run-fuzz-mode.sh coverage` 재실행 결과, seed corpus가 5 files curated set으로 줄었고
+      - `fuzz-artifacts/modes/coverage/20260416_223511_coverage/FUZZING_REPORT.md`에서 `asan|coding_units.cpp:3076|SEGV ...` medium-stage new signal을 즉시 포착
+      - fresh `current_status.json` / `openhtj2k-llm-evidence.json` 기준으로 latest signal은 duplicate `j2kmarkers.cpp:52`가 아니라 non-duplicate `coding_units.cpp:3076`이고, finding efficiency summary도 `healthy`로 회복
+- 의미:
+  - active rerun input이 이제 target profile이 말하는 preferred deep-decode seeds를 실제로 따른다.
+  - wrapper contract를 바로잡은 다음 단계로, real autonomous loop의 마지막 입력 품질까지 evidence-aware하게 정리했다.
+  - 같은 8초 bounded run에서도 parser-heavy duplicate 대신 tile-part-load crash family로 이동했으므로, 이번 변화는 문서상 quarantine이 아니라 실제 signal steering이다.
+- 한계:
+  - 아직 새 `coding_units.cpp:3076` coverage-discovered crash를 duplicate replay/minimize/reseed rail로 다시 닫지 않았다.
+  - coverage rerun 하나만으로 장기 novelty improvement가 보장되지는 않는다.
+  - remote/proxmox closure는 여전히 남아 있다.
+- 관련 문서:
+  - `notes/2026-04-16-hermes-watch-profile-curated-coverage-corpus-quarantine-v0.1-note.md`
+  - `checklists/2026-04-16-hermes-watch-profile-curated-coverage-corpus-quarantine-v0.1-checklist.md`
 
 ### Deep-decode-v3 runtime corpus override alignment v0.1
 - root cause:

@@ -1,6 +1,6 @@
 # Self-Improving Fuzzing System Progress Index
 
-- Updated: 2026-04-16 22:19:23 KST
+- Updated: 2026-04-16 22:35:52 KST
 - Purpose: **자가발전형 퍼징 시스템 개발을 버전처럼 추적하고, 각 단계의 가치/한계/피드백 근거를 남기기 위한 상위 진행표**
 
 ---
@@ -113,6 +113,7 @@
 | Medium duplicate replay escalation + packet recovery v0.1 | 완료 | repeated medium duplicate family도 replay review rail과 LLM packet recovery를 다시 타며 latest repeated crash를 reseed/minimization next step으로 연결 | `notes/2026-04-16-hermes-watch-medium-duplicate-replay-escalation-and-packet-recovery-v0.1-note.md`, `checklists/2026-04-16-hermes-watch-medium-duplicate-replay-escalation-and-packet-recovery-v0.1-checklist.md` |
 | Medium duplicate corpus refinement execution + refiner LLM refresh v0.1 | 완료 | `coding_units.cpp:3076` medium duplicate family도 actual bucket sync + retention replay를 닫고, refiner executor 종료 시 LLM evidence packet도 즉시 refresh되도록 보강 | `notes/2026-04-16-hermes-watch-medium-duplicate-corpus-refinement-execution-and-llm-refresh-v0.1-note.md`, `checklists/2026-04-16-hermes-watch-medium-duplicate-corpus-refinement-execution-and-llm-refresh-v0.1-checklist.md` |
 | Deep-decode-v3 runtime corpus override alignment v0.1 | 완료 | active profile의 hard-pinned `CORPUS_DIR` contract를 env-override friendly로 바꿔 `run-fuzz-mode.sh`의 triage/coverage/regression wrapper가 실제 corpus를 fuzzer까지 전달하도록 수정 | `notes/2026-04-16-deep-decode-v3-runtime-corpus-override-alignment-v0.1-note.md`, `checklists/2026-04-16-deep-decode-v3-runtime-corpus-override-alignment-v0.1-checklist.md` |
+| Profile-curated coverage corpus quarantine v0.1 | 완료 | target profile preferred deep-decode seed classes를 active coverage corpus에 실제 반영하고 opaque coverage seeds를 quarantine으로 밀어내 bounded rerun 입력 품질을 정리 | `notes/2026-04-16-hermes-watch-profile-curated-coverage-corpus-quarantine-v0.1-note.md`, `checklists/2026-04-16-hermes-watch-profile-curated-coverage-corpus-quarantine-v0.1-checklist.md` |
 | Replay-derived corpus refinement plan closure v0.1 | 완료 | duplicate replay에서 생긴 `minimize_and_reseed` queue가 actual plan/orchestration/dispatch request artifact로 소비되기 시작 | `notes/2026-04-16-hermes-watch-replay-derived-corpus-refinement-plan-closure-v0.1-note.md`, `checklists/2026-04-16-hermes-watch-replay-derived-corpus-refinement-plan-closure-v0.1-checklist.md` |
 | Multi-target adapter generalization | 보류/중요 | OpenHTJ2K-specific leakage를 더 줄이고 reusable substrate로 넓히는 후속 일반화 단계 | `.hermes/plans/2026-04-15_133343-semi-autonomous-multi-target-fuzzing-roadmap.md`, `checklists/2026-04-16-multi-target-adapter-generalization-prep-checklist.md` |
 
@@ -238,12 +239,12 @@
 ---
 
 ## 다음 단계
-1. `reseed effectiveness measurement`
-   - 이제 wrapper corpus override가 실제로 먹으므로 coverage corpus 기준 bounded rerun 전후 novelty / duplicate recurrence / coverage delta를 계측
-2. `active corpus toxic-seed quarantine`
-   - 이번 rerun에서 다시 드러난 `j2kmarkers.cpp:52` duplicate dominance를 active coverage bucket 수준에서 줄이는 안전한 격리 규칙 추가
+1. `coverage-discovered coding_units.cpp:3076 closure`
+   - 방금 잡힌 non-duplicate medium-stage crash를 triage/regression preservation, replay review, minimize/reseed rail까지 다시 닫아 이번 corpus curation이 단발 signal이 아니라 loop closure로 이어지는지 확인
+2. `curated coverage corpus repeatability check`
+   - 같은 curated coverage corpus로 bounded rerun을 몇 번 더 돌려 `j2kmarkers.cpp:52` shallow duplicate 재우세가 실제로 줄었는지 계측
 3. `remote/proxmox closure`
-   - local evidence/triage 품질을 유지한 채 remote bridge에서도 같은 override-friendly corpus contract와 preservation/replay loop가 재현되는지 검증
+   - local에서 확인된 profile-curated coverage contract와 quarantine rail이 remote bridge에서도 같은 형태로 재현되는지 검증
 
 ---
 
