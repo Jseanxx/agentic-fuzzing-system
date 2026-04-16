@@ -1,0 +1,160 @@
+# Overview
+IrfanView is a fast, compact and innovative FREEWARE (for non-commercial use) graphic viewer for Windows XP, Vista, 7, 8, 10 and 11.
+
+[Link](https://www.irfanview.com/)
+
+# Product Info
+Plugin: Mng.dll - 4.57
+
+# File Info
+## Extension
+mng
+
+## File Name
+<추후 수정 예정>.mng
+
+# Vulnerability Description
+When running a specific file in the IrfanView 4.70 64-bit, an Access Violation occurs at MNG!StopPlayMNG+0x6769.
+
+## Vulnerability PoC
+```
+... 103번 사이클
+0:000> g;ub MNG!StopPlayMNG+0x6763;r
+Breakpoint 0 hit
+MNG!StopPlayMNG+0x6747:
+00007ffd`f8778b57 4885db          test    rbx,rbx
+00007ffd`f8778b5a 480f44d8        cmove   rbx,rax
+00007ffd`f8778b5e 33c0            xor     eax,eax
+00007ffd`f8778b60 4883fbe0        cmp     rbx,0FFFFFFFFFFFFFFE0h
+00007ffd`f8778b64 7718            ja      MNG!StopPlayMNG+0x676e (00007ffd`f8778b7e)
+00007ffd`f8778b66 488b0d73350700  mov     rcx,qword ptr [MNG!StopPlayMNG+0x79cd0 (00007ffd`f87ec0e0)]
+00007ffd`f8778b6d 8d5008          lea     edx,[rax+8]
+00007ffd`f8778b70 4c8bc3          mov     r8,rbx
+rax=0000000000000000 rbx=0000000000000400 rcx=000001ce878f0000
+rdx=0000000000000008 rsi=000001ce8794e1e0 rdi=000000a0a3af7100
+rip=00007ffdf8778b73 rsp=000000a0a3af7090 rbp=0000000000000000
+ r8=0000000000000400  r9=0000000000000000 r10=0000000000000003
+r11=000000a0a3af7020 r12=00007ff716de51d4 r13=0000000000000000
+r14=000001ce8794dae0 r15=0000000000000001
+iopl=0         nv up ei pl nz na pe cy
+cs=0033  ss=002b  ds=002b  es=002b  fs=0053  gs=002b             efl=00000203
+MNG!StopPlayMNG+0x6763:
+00007ffd`f8778b73 ff1547750300    call    qword ptr [MNG!StopPlayMNG+0x3dcb0 (00007ffd`f87b00c0)] ds:00007ffd`f87b00c0={ntdll!RtlAllocateHeap (00007ffe`2a06cb00)}
+
+0:000> g;ub MNG!StopPlayMNG+0x6763;r
+(94c.2410): Access violation - code c0000005 (first chance)
+First chance exceptions are reported before any exception handling.
+This exception may be expected and handled.
+MNG!StopPlayMNG+0x6747:
+00007ffd`f8778b57 4885db          test    rbx,rbx
+00007ffd`f8778b5a 480f44d8        cmove   rbx,rax
+00007ffd`f8778b5e 33c0            xor     eax,eax
+00007ffd`f8778b60 4883fbe0        cmp     rbx,0FFFFFFFFFFFFFFE0h
+00007ffd`f8778b64 7718            ja      MNG!StopPlayMNG+0x676e (00007ffd`f8778b7e)
+00007ffd`f8778b66 488b0d73350700  mov     rcx,qword ptr [MNG!StopPlayMNG+0x79cd0 (00007ffd`f87ec0e0)]
+00007ffd`f8778b6d 8d5008          lea     edx,[rax+8]
+00007ffd`f8778b70 4c8bc3          mov     r8,rbx
+rax=0000000000000000 rbx=000001ce878f0000 rcx=000000000000008d
+rdx=000000000000008d rsi=000001ce8796a440 rdi=000000000000000d
+rip=00007ffe2a06f4e1 rsp=000000a0a3af6d30 rbp=000000a0a3af7029
+ r8=000001ce878f34d8  r9=000000000000001b r10=00007ffe2a16d0a0
+r11=00000000ffffffff r12=0000000000000000 r13=00007ffdf8767a60
+r14=000001ce8796a450 r15=0000000000000041
+iopl=0         nv up ei pl nz na pe nc
+cs=0033  ss=002b  ds=002b  es=002b  fs=0053  gs=002b             efl=00010202
+ntdll!RtlpAllocateHeap+0x3a1:
+00007ffe`2a06f4e1 498b0424        mov     rax,qword ptr [r12] ds:00000000`00000000=????????????????
+
+0:000> g;ub MNG!StopPlayMNG+0x6763;r
+(94c.2410): Access violation - code c0000005 (!!! second chance !!!)
+MNG!StopPlayMNG+0x6747:
+00007ffd`f8778b57 4885db          test    rbx,rbx
+00007ffd`f8778b5a 480f44d8        cmove   rbx,rax
+00007ffd`f8778b5e 33c0            xor     eax,eax
+00007ffd`f8778b60 4883fbe0        cmp     rbx,0FFFFFFFFFFFFFFE0h
+00007ffd`f8778b64 7718            ja      MNG!StopPlayMNG+0x676e (00007ffd`f8778b7e)
+00007ffd`f8778b66 488b0d73350700  mov     rcx,qword ptr [MNG!StopPlayMNG+0x79cd0 (00007ffd`f87ec0e0)]
+00007ffd`f8778b6d 8d5008          lea     edx,[rax+8]
+00007ffd`f8778b70 4c8bc3          mov     r8,rbx
+rax=0000000000000000 rbx=000001ce878f0000 rcx=000000000000008d
+rdx=000000000000008d rsi=000001ce8796a440 rdi=000000000000000d
+rip=00007ffe2a06f4e1 rsp=000000a0a3af6d30 rbp=000000a0a3af7029
+ r8=000001ce878f34d8  r9=000000000000001b r10=00007ffe2a16d0a0
+r11=00000000ffffffff r12=0000000000000000 r13=00007ffdf8767a60
+r14=000001ce8796a450 r15=0000000000000041
+iopl=0         nv up ei pl nz na pe nc
+cs=0033  ss=002b  ds=002b  es=002b  fs=0053  gs=002b             efl=00010200
+ntdll!RtlpAllocateHeap+0x3a1:
+00007ffe`2a06f4e1 498b0424        mov     rax,qword ptr [r12] ds:00000000`00000000=????????????????
+
+0:000> kv
+ # Child-SP          RetAddr               : Args to Child                                                           : Call Site
+00 000000a0`a3af6d30 00007ffe`2a06d249     : 000001ce`878f0000 000001ce`0000000a 00000000`00000400 00000000`00000410 : ntdll!RtlpAllocateHeap+0x3a1
+01 000000a0`a3af6f90 00007ffd`f8778b79     : 00000000`00000000 00000000`00000400 00000000`00000000 00007ff7`16de0000 : ntdll!RtlpAllocateHeapInternal+0x6c9
+02 000000a0`a3af7090 00007ffd`f8774ef5     : 000001ce`879355f0 00000000`00000000 00000000`00000000 00000000`00000000 : MNG!StopPlayMNG+0x6769
+03 000000a0`a3af70c0 00007ffd`f876886b     : 00000000`00000000 00000000`00000000 00000000`00000000 00007ffd`f8770701 : MNG!StopPlayMNG+0x2ae5
+04 000000a0`a3af70f0 00007ffd`f8760447     : 000001ce`879355f0 00007ff7`16df7d80 00007ffd`f8750000 00000000`00000000 : MNG!SaveJNG_W+0xcb5b
+05 000000a0`a3af7120 00007ffd`f8763bb9     : 00000000`00000000 000001ce`879355f0 00007ff7`16df7d80 00000000`00000001 : MNG!SaveJNG_W+0x4737
+06 000000a0`a3af7150 00007ffd`f8771f40     : 00000000`00000001 000001ce`8794e060 00007ff7`16df7d80 00007ffe`272a22ec : MNG!SaveJNG_W+0x7ea9
+07 000000a0`a3af7180 00007ffd`f8772113     : 00007ff7`16df7d80 00000000`00000000 00007ff7`16df7d80 00000000`00000000 : MNG!GetPlugInInfo+0x270
+08 000000a0`a3af71b0 00007ff7`16c6af82     : 000000a0`a3af75a0 000000a0`a3af75a0 00000000`00000000 00000000`00000000 : MNG!ReadMNGJNG_W+0xb3
+09 000000a0`a3af71f0 00007ff7`16c89f34     : 000001ce`878f0000 000001ce`87954a3f 000001ce`878f0150 000001ce`87957ca0 : i_view64+0x9af82
+0a 000000a0`a3af7470 00007ff7`16c8920c     : 00000000`00000000 00000000`00000000 000000a0`a3af83b0 00007ff7`16df81a0 : i_view64+0xb9f34
+0b 000000a0`a3af82c0 00007ff7`16c46e09     : 00000000`00000021 00000000`00000001 00000000`00000000 00007ff7`16dea084 : i_view64+0xb920c
+0c 000000a0`a3af8e40 00007ff7`16c58733     : 00000000`00000000 00000000`00000001 000000a0`a3af9250 00000000`00000001 : i_view64+0x76e09
+0d 000000a0`a3af9130 00007ffe`28f48ee8     : 00000000`00000000 00007ffe`28fc8370 00000000`00000000 00000000`00000233 : i_view64+0x88733
+0e 000000a0`a3afefa0 00007ffe`28f487a1     : 00000000`00000000 00007ff7`16c4dae0 000000a0`a3aff280 00007ffe`28f5617a : USER32!UserCallWinProcCheckWow+0x4d8
+0f 000000a0`a3aff100 00007ff7`16c5c3f8     : 000000a0`a3aff280 00000000`00000000 00000000`0000016b 00000000`00000005 : USER32!DispatchMessageWorker+0x1f1
+10 000000a0`a3aff180 00007ff7`16ced0e0     : 00000000`00000000 00000000`00000000 00000000`00000001 00007ff7`16bd0000 : i_view64+0x8c3f8
+11 000000a0`a3aff7a0 00007ffe`2922259d     : 00000000`00000000 00000000`00000000 00000000`00000000 00000000`00000000 : i_view64+0x11d0e0
+12 000000a0`a3aff7e0 00007ffe`2a08af38     : 00000000`00000000 00000000`00000000 00000000`00000000 00000000`00000000 : KERNEL32!BaseThreadInitThunk+0x1d
+13 000000a0`a3aff810 00000000`00000000     : 00000000`00000000 00000000`00000000 00000000`00000000 00000000`00000000 : ntdll!RtlUserThreadStart+0x28
+
+0:000> ub ntdll!RtlpAllocateHeap+0x3a1
+ntdll!RtlpAllocateHeap+0x381:
+00007ffe`2a06f4c1 0fb74e08        movzx   ecx,word ptr [rsi+8]
+00007ffe`2a06f4c5 0fb7c1          movzx   eax,cx
+00007ffe`2a06f4c8 66c1e808        shr     ax,8
+00007ffe`2a06f4cc 4c8b7c2438      mov     r15,qword ptr [rsp+38h]
+00007ffe`2a06f4d1 493bcf          cmp     rcx,r15
+00007ffe`2a06f4d4 0f82f1120000    jb      ntdll!RtlpAllocateHeap+0x168b (00007ffe`2a0707cb)
+00007ffe`2a06f4da 4d8b2e          mov     r13,qword ptr [r14]
+00007ffe`2a06f4dd 4c8b6618        mov     r12,qword ptr [rsi+18h]
+0:000> u ntdll!RtlpAllocateHeap+0x3a1
+ntdll!RtlpAllocateHeap+0x3a1:
+00007ffe`2a06f4e1 498b0424        mov     rax,qword ptr [r12]
+00007ffe`2a06f4e5 4d8b4d08        mov     r9,qword ptr [r13+8]
+00007ffe`2a06f4e9 493bc1          cmp     rax,r9
+00007ffe`2a06f4ec 0f85b6120000    jne     ntdll!RtlpAllocateHeap+0x1668 (00007ffe`2a0707a8)
+00007ffe`2a06f4f2 493bc6          cmp     rax,r14
+00007ffe`2a06f4f5 0f85ad120000    jne     ntdll!RtlpAllocateHeap+0x1668 (00007ffe`2a0707a8)
+00007ffe`2a06f4fb 488b83c0000000  mov     rax,qword ptr [rbx+0C0h]
+00007ffe`2a06f502 482bc1          sub     rax,rcx
+
+0:000> !analyze
+*******************************************************************************
+*                                                                             *
+*                        Exception Analysis                                   *
+*                                                                             *
+*******************************************************************************
+
+*** WARNING: Check Image - Checksum mismatch - Dump: 0x224520, File: 0x21cccf - C:\ProgramData\Dbg\sym\ntdll.dll\36D7BCF8217000\ntdll.dll
+DEBUG_FLR_EXCEPTION_CODE(c0000374) and the ".exr -1" ExceptionCode(c0000005) don't match
+
+PROCESS_NAME:  i_view64.exe
+
+ERROR_CODE: (NTSTATUS) 0xc0000005 - 0x%p               0x%p                        .          %s              .
+
+SYMBOL_NAME:  i_view64+9af82
+
+MODULE_NAME: i_view64
+
+IMAGE_NAME:  i_view64.exe
+
+FAILURE_BUCKET_ID:  HEAP_CORRUPTION_c0000005_i_view64.exe!Unknown
+
+FAILURE_ID_HASH:  {5d0c3f1c-bb77-08ac-f579-649499d0bee9}
+
+Followup:     MachineOwner
+---------
+```
