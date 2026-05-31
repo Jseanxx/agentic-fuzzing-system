@@ -15,6 +15,7 @@ Source: https://openai.com/ko-KR/form/codex-for-oss/
 | GitHub repository URL | https://github.com/Jseanxx/agentic-fuzzing-system |
 | Role | Primary maintainer |
 | Interested in | Codex Security, API credits |
+| Codex Security reason | See final answer below |
 | OpenAI organization ID | `<OpenAI organization ID from platform.openai.com>` |
 
 ## OSINT Notes
@@ -55,6 +56,12 @@ Character count: 499
 API credits would fund the token-heavy parts of defensive OSS fuzzing: summarizing long run artifacts, generating and critiquing small harness revisions, comparing pre/post-run signals, classifying duplicate crash families, drafting replay/minimization plans, and producing maintainer-readable reports. The goal is reviewable, authorized security automation that preserves meaningful crashes and reduces noisy duplicate rediscovery, not unattended scanning.
 
 Character count: 448
+
+### Why Codex Security Is Needed
+
+Codex Security would support defensive review of harness and control-plane changes before they influence fuzzing evidence. We would use it to surface unsafe code patterns, triage regressions in crash handling, check generated patches before maintainer review, and keep the workflow focused on authorized targets, reproducible crash replay, and responsible OSS security reporting.
+
+Character count: 379
 
 ### Additional Context
 
