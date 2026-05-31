@@ -1,53 +1,164 @@
 # Agentic Fuzzing System
 
-이 저장소는 단일 JPEG2000 실험 레포가 아니라, **LLM-first 자동 에이전트 퍼징 시스템**을 키우기 위한 상위 프로젝트다.
+Agentic Fuzzing System is an open-source security research project for turning fuzzing into an evidence-driven maintainer workflow. It combines target profiling, harness engineering, corpus management, crash replay, and LLM-assisted debugging into a repeatable loop for finding, preserving, and explaining meaningful bugs in native-code software.
 
-현재 구조는 다음과 같다.
+The project started with a JPEG 2000 / OpenHTJ2K target, but the goal is broader: build a reusable control plane that can help maintainers fuzz complex native-code projects without losing the reasoning trail between a crash, the harness that reached it, the corpus that triggered it, and the next safe change.
 
-## 핵심 개념
-- 상위 목표: 의미 있는 크래시를 찾기 위해 하네스 엔지니어링, 시드/코퍼스 운영, 리플레이/정제, LLM 디버깅 루프를 하나의 시스템으로 묶는다.
-- 운영 원칙: artifact-first, evidence-aware, bounded automation.
-- LLM 역할: 단순 요약이 아니라 하네스 수정 전/후 진단, 제안, 비판, 결과 해석을 반복한다.
+## Reviewer Summary
 
-## 현재 포함된 주요 자산
+This repository is designed around a concrete security-maintainer problem: fuzzers can find crashes, but maintainers often lose time to noisy corpora, duplicate crash rediscovery, weak triage, and unreviewed harness changes. The project turns that workflow into auditable artifacts that a human maintainer or coding agent can review.
 
-### 1. In-repo skills
-- `skills/harness-engineering-loop/`
-  - 하네스 수정 전에 어떤 md/증거를 어떤 순서로 읽어야 하는지 고정하는 프로토콜
-  - Hermès 없이 Codex/다른 에이전트에서 읽어도 되는 repo-contained skill 자산
+What is already present:
 
-### 2. Active target testbed
-- `targets/jpeg2000-openhtj2k/`
-  - JPEG2000 / OpenHTJ2K 기반 실험 타깃
-  - 퍼징 harness, watcher/control-plane, fuzz records, replay/refinement artifacts, 테스트 코드 포함
-  - 큰 시스템 안의 **테스트베드/검증 타깃** 역할
+- a realistic native-code parser target: OpenHTJ2K / JPEG 2000
+- multiple fuzzing harnesses and run scripts
+- crash samples and replay-oriented records
+- corpus refinement and quarantine records
+- progress/status documents that track completed research slices
+- a repo-contained agent skill for evidence-first harness engineering
+- a responsible-use boundary for defensive, authorized security work
 
-### 3. Crash samples
-- `crash-samples/jpeg2000-openhtj2k/`
-  - 루트에 흩어져 있던 샘플 크래시를 정리한 폴더
-  - 타깃별로 분리 보관
+The intended contribution is not another one-off fuzz harness. It is a reusable maintainer workflow for turning fuzzing output into security evidence that can improve parser safety, crash handling, and release confidence across open-source projects.
 
-## 시작점
-1. 상위 규칙 확인:
-   - `skills/harness-engineering-loop/SKILL.md`
-2. JPEG2000 타깃 작업 시작:
-   - `targets/jpeg2000-openhtj2k/README.md`
-3. 현재 상태/기록 확인:
-   - `targets/jpeg2000-openhtj2k/fuzz-records/README.md`
-   - `targets/jpeg2000-openhtj2k/fuzz-records/current-status.md`
-   - `targets/jpeg2000-openhtj2k/fuzz-records/progress-index.md`
+## Why This Exists
 
-## 왜 이렇게 정리했나
-기존 작업은 JPEG2000/OpenHTJ2K를 기반으로 빠르게 성장했지만, 목표는 처음부터 더 컸다.
-즉 진짜 프로젝트는:
-- 하나의 타깃만 계속 만지는 레포가 아니라
-- 여러 테스트베드/타깃으로 확장 가능한
-- **자동 에이전트 퍼징 시스템**이다.
+Traditional fuzzing pipelines can produce a lot of artifacts without answering the questions a maintainer actually needs answered:
 
-JPEG2000/OpenHTJ2K는 그 안에서 가장 먼저 깊게 밀어본 실험 타깃이다.
+- Is this crash new, duplicated, shallow, or worth preserving?
+- Did the latest harness change improve deeper code reach, or only make smoke tests pass?
+- Which seeds should stay active, and which should be quarantined?
+- What evidence should an LLM read before proposing a harness change?
+- How do we keep autonomous debugging bounded, reviewable, and reversible?
 
-## 현재 권장 역할 분담
-- 빠른 구현/반복: Codex 같은 코드 중심 에이전트
-- 규칙/감사/프로토콜/기록: Hermes
+This repository explores those questions through an artifact-first workflow. Every important action should leave behind enough evidence for a human maintainer or coding agent to understand what happened and why the next step is justified.
 
-이 저장소는 두 흐름이 같이 쓸 수 있도록 정리되어 있다.
+## Current Capabilities
+
+- **Harness engineering loop**: a repo-contained skill that forces agents through diagnose, propose, critique, and post-run analysis before changing a harness.
+- **Target profiling**: target-specific profiles describe fuzz commands, entrypoints, seed classes, guard policies, and preferred rerun paths.
+- **Crash triage and replay**: repeated crash families are fingerprinted, replayed, and routed toward minimization or reseeding instead of being rediscovered forever.
+- **Corpus refinement**: active coverage corpora can be curated from target profiles while noisy opaque seeds are moved into quarantine instead of being deleted.
+- **Evidence packets for LLMs**: current status, failure reasons, run artifacts, replay context, and suggested next actions are compressed into handoff artifacts.
+- **Bounded automation**: proposed changes are scoped, validated, recorded, and connected back to build, smoke, fuzz, and replay evidence.
+
+## Active Testbed
+
+The first validation target is:
+
+```text
+targets/jpeg2000-openhtj2k/
+```
+
+This target uses OpenHTJ2K, an open-source C++ implementation of JPEG 2000 Part 1 and High-Throughput JPEG 2000. JPEG 2000 decoding is a useful fuzzing testbed because it combines binary parsing, marker handling, tile state, entropy decoding, memory lifetime concerns, and a large space of valid and semi-valid codestream inputs.
+
+The current target contains:
+
+- libFuzzer/AFL++ harnesses under `fuzz/`
+- build and run scripts under `scripts/`
+- conformance and seed material under `conformance_data/`
+- progress, status, replay, corpus, and LLM handoff records under `fuzz-records/`
+- crash samples under `../../crash-samples/jpeg2000-openhtj2k/`
+
+## Evidence of Progress
+
+The project is intentionally tracked like a sequence of research versions rather than a loose pile of scripts.
+
+Useful entry points:
+
+- `targets/jpeg2000-openhtj2k/fuzz-records/current-status.md`
+- `targets/jpeg2000-openhtj2k/fuzz-records/progress-index.md`
+- `skills/harness-engineering-loop/SKILL.md`
+
+Recent completed slices include:
+
+- runtime corpus override alignment for the active deep-decode-v3 profile
+- profile-curated coverage corpus quarantine
+- medium duplicate replay escalation and packet recovery
+- replay-derived corpus refinement execution
+- LLM evidence packet generation and refresh
+- multi-target adapter generalization slices
+- guarded patch apply, rollback, and recovery routing experiments
+
+These records are part of the project surface, not private notes. They are meant to make the system auditable by other maintainers and agents.
+
+## Repository Layout
+
+```text
+.
+|-- README.md
+|-- LICENSE
+|-- SECURITY.md
+|-- CONTRIBUTING.md
+|-- docs/
+|   |-- codex-oss-application.md
+|   `-- reviewer-brief.md
+|-- skills/
+|   `-- harness-engineering-loop/
+|-- targets/
+|   |-- README.md
+|   `-- jpeg2000-openhtj2k/
+|       |-- fuzz/
+|       |-- fuzz-records/
+|       |-- scripts/
+|       |-- tests/
+|       `-- conformance_data/
+|-- crash-samples/
+|   `-- jpeg2000-openhtj2k/
+`-- REPO_RESTRUCTURE_CHECKLIST.md
+```
+
+## How an Agent Should Work in This Repo
+
+For harness work, start with the skill:
+
+```text
+skills/harness-engineering-loop/SKILL.md
+```
+
+The expected loop is:
+
+1. Diagnose the current bottleneck from status, evidence packets, target profiles, and replay artifacts.
+2. Propose one bounded harness, seed, corpus, or replay change.
+3. Critique the proposal before applying it.
+4. Run the relevant build/smoke/fuzz check.
+5. Compare expected and actual signal, especially deeper stage reach, duplicate pressure, and crash quality.
+
+The important rule is simple: do not patch from vibes. Patch from evidence, then preserve the evidence that proves whether the patch helped.
+
+## Quick Start
+
+Read the project status first:
+
+```bash
+sed -n '1,160p' targets/jpeg2000-openhtj2k/fuzz-records/current-status.md
+```
+
+Build and smoke commands for the active target live in:
+
+```text
+targets/jpeg2000-openhtj2k/scripts/
+```
+
+Target-specific build details live in:
+
+```text
+targets/jpeg2000-openhtj2k/FUZZING.md
+targets/jpeg2000-openhtj2k/FUZZING_PLAN.md
+targets/jpeg2000-openhtj2k/README.md
+```
+
+## Roadmap
+
+- Split the reusable control plane from the OpenHTJ2K validation target more cleanly.
+- Add a second target to prove that the adapter model is not JPEG2000-specific.
+- Improve crash minimization and reseed measurement after duplicate replay.
+- Publish a shorter maintainer guide for using the diagnose/propose/critique/post-run loop in other native-code projects.
+- Add CI coverage for the top-level agent workflow contracts.
+
+## Responsible Use
+
+This repository is for defensive research, maintainer automation, and authorized testing. Do not use it to fuzz, scan, or test software you do not own or do not have permission to assess. Crash samples and automation artifacts should be handled as security-relevant research material.
+
+## License
+
+Original automation assets in this repository are licensed under the MIT License unless otherwise noted. Third-party target code keeps its own license; the OpenHTJ2K target retains its BSD 3-Clause license under `targets/jpeg2000-openhtj2k/LICENSE`.
